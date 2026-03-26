@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Día de las Madres</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="petals" id="petals"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">10 de Mayo</p>
+      <h1 class="hero__title">Feliz Día,<br /><em>Mamá</em></h1>
+      <p class="hero__subtitle">Gracias por cada abrazo, cada palabra y cada momento<br />que convirtiste en un recuerdo eterno.</p>
+      <a href="#regalo" class="btn btn--primary">Encuentra su regalo perfecto</a>
+    </div>
+    <div class="hero__scroll-hint">↓</div>
+  </section>
+
+  <!-- Por qué ella es especial -->
+  <section class="values">
+    <div class="container">
+      <h2 class="section-title">Lo que hace única a una madre</h2>
+      <div class="values__grid">
+        <div class="value-card">
+          <span class="value-card__icon">🌸</span>
+          <h3>Amor incondicional</h3>
+          <p>Su amor no tiene condiciones ni límites. Está ahí en cada tropiezo y en cada logro.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-card__icon">✨</span>
+          <h3>Fuerza infinita</h3>
+          <p>Capaz de cargar el mundo con una sonrisa y aún así darte la mano cuando más la necesitas.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-card__icon">💌</span>
+          <h3>Palabras que sanan</h3>
+          <p>Sabe exactamente qué decir para que todo parezca posible de nuevo.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-card__icon">🌿</span>
+          <h3>Raíces y alas</h3>
+          <p>Te enseñó de dónde vienes y te dio el valor para volar tan alto como quisieras.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mensaje especial -->
+  <section class="quote">
+    <div class="container">
+      <blockquote>
+        "Una madre es quien puede tomar el lugar de todos los demás,<br />
+        pero cuyo lugar nadie puede tomar."
+        <cite>— Cardinal Mermillod</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- Catálogo de regalos -->
+  <section class="gifts" id="regalo">
+    <div class="container">
+      <h2 class="section-title">Regalos con todo tu amor</h2>
+      <p class="section-subtitle">Cada detalle pensado para hacerla sentir especial</p>
+      <div class="gifts__grid">
+        <div class="gift-card">
+          <div class="gift-card__img gift-card__img--1"></div>
+          <div class="gift-card__body">
+            <span class="gift-card__tag">Bestseller</span>
+            <h3>Arreglo floral premium</h3>
+            <p>Rosas y flores de temporada con mensaje personalizado.</p>
+            <a href="#" class="btn btn--outline">Ver más</a>
+          </div>
+        </div>
+        <div class="gift-card">
+          <div class="gift-card__img gift-card__img--2"></div>
+          <div class="gift-card__body">
+            <span class="gift-card__tag">Favorito</span>
+            <h3>Caja de mimos</h3>
+            <p>Chocolates artesanales, vela aromática y tarjeta especial.</p>
+            <a href="#" class="btn btn--outline">Ver más</a>
+          </div>
+        </div>
+        <div class="gift-card">
+          <div class="gift-card__img gift-card__img--3"></div>
+          <div class="gift-card__body">
+            <span class="gift-card__tag">Nuevo</span>
+            <h3>Experiencia spa</h3>
+            <p>Un día de relax y bienestar para que se sienta como reina.</p>
+            <a href="#" class="btn btn--outline">Ver más</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Final -->
+  <section class="cta">
+    <div class="container">
+      <h2>Dile cuánto la amas hoy</h2>
+      <p>No esperes al día perfecto. Sorpréndela ahora.</p>
+      <form class="cta__form" onsubmit="handleSubmit(event)">
+        <input type="email" placeholder="Tu correo electrónico" required />
+        <button type="submit" class="btn btn--primary">Quiero sorprenderla</button>
+      </form>
+      <p class="cta__note" id="formMsg"></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>Con amor, para todas las madres del mundo 💗</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
