@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canario — Brand Book</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>* { box-sizing:border-box; margin:0; padding:0; } ::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:#F4EDD8} ::-webkit-scrollbar-thumb{background:#F5C800;border-radius:3px}</style>
+</head>
+<body><div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+const YELLOW="#F5C800",CREAM="#F4EDD8",DARK="#1A1008";
+const INKS={
+  cobalto:{name:"Azul Cobalto",hex:"#1B3A8A",light:"#C4D2E8",label:"El Clásico Portugués"},
+  negro:  {name:"Negro Mate",  hex:"#1A1008",light:"#D4C8B0",label:"Bold & Dramático"},
+  carmesi:{name:"Carmesí",     hex:"#7A1928",light:"#E8C0C8",label:"Vino & Tradición"},
+};
+
+const Bird=({size=120,ink=INKS.cobalto.hex,paper=CREAM,frame=true})=>(
+  <svg width={size} height={Math.round(size*1.2)} viewBox="0 0 110 132" fill="none">
+    {frame&&<><ellipse cx="55" cy="60" rx="51" ry="57" fill={paper} stroke={ink} strokeWidth="1.6"/>
+    <ellipse cx="55" cy="60" rx="47" ry="53" fill="none" stroke={ink} strokeWidth="0.5"/>
+    <circle cx="55" cy="4" r="2.5" fill={ink}/><circle cx="55" cy="116" r="2.5" fill={ink}/>
+    <circle cx="4" cy="60" r="2.5" fill={ink}/><circle cx="106" cy="60" r="2.5" fill={ink}/>
+    <path d="M46 4 L55 1 L64 4" stroke={ink} strokeWidth="0.6" fill="none" strokeLinecap="round"/>
+    <path d="M46 116 L55 119 L64 116" stroke={ink} strokeWidth="0.6" fill="none" strokeLinecap="round"/></>}
+    <path d="M10 94 C32 90 65 88 100 92" stroke={ink} strokeWidth="3.2" strokeLinecap="round" fill="none"/>
+    <path d="M10 96 C32 92 65 90 100 94" stroke={ink} strokeWidth="0.5" strokeLinecap="round" fill="none" opacity="0.4"/>
+    {[[22,92,28,86,32,92],[55,89,61,83,65,90],[82,91,88,85,92,92]].map(([x1,y1,x2,y2,x3,y3],i)=>(
+      <g key={i}>
+        <path d={`M${x1} ${y3} C${x1-3} ${y1} ${x2} ${y1-4} ${x3} ${y2} C${x3+2} ${y2+3} ${x2} ${y3+2} ${x1} ${y3} Z`} fill={paper} stroke={ink} strokeWidth="0.8"/>
+        <path d={`M${(x1+x3)/2} ${y3} L${x2} ${y1}`} stroke={ink} strokeWidth="0.35" strokeLinecap="round"/>
+      </g>
+    ))}
+    <path d="M28 80 C20 86 12 96 9 108 C13 103 17 106 17 100 C20 107 23 104 24 97 C26 104 30 101 30 93 Z" fill={paper} stroke={ink} strokeWidth="0.9" strokeLinejoin="round"/>
+    <path d="M26 81 L14 103" stroke={ink} strokeWidth="0.35" strokeLinecap="round" opacity="0.65"/>
+    <path d="M22 82 L12 103" stroke={ink} strokeWidth="0.35" strokeLinecap="round" opacity="0.65"/>
+    <path d="M29 87 L22 105" stroke={ink} strokeWidth="0.35" strokeLinecap="round" opacity="0.65"/>
+    <path d="M50 68 C38 66 26 72 26 84 C26 97 35 105 50 106 C66 107 77 99 79 87 C81 75 66 66 52 67 Z" fill={paper} stroke={ink} strokeWidth="1.3" strokeLinecap="round"/>
+    <path d="M34 76 C42 81 56 83 68 79" stroke={ink} strokeWidth="0.4" fill="none" strokeLinecap="round" opacity="0.55"/>
+    <path d="M32 84 C40 89 54 91 66 87" stroke={ink} strokeWidth="0.4" fill="none" strokeLinecap="round" opacity="0.55"/>
+    <path d="M33 92 C41 96 53 98 65 94" stroke={ink} strokeWidth="0.35" fill="none" strokeLinecap="round" opacity="0.45"/>
+    <path d="M29 80 C37 84 47 86 57 83" stroke={ink} strokeWidth="0.65" fill="none" strokeLinecap="round"/>
+    <path d="M62 50 C54 48 46 53 46 63 C46 74 53 80 63 80 C74 80 82 73 82 63 C82 53 72 48 64 49 Z" fill={paper} stroke={ink} strokeWidth="1.3" strokeLinecap="round"/>
+    <path d="M50 58 C57 60 68 59 76 55" stroke={ink} strokeWidth="0.3" fill="none" strokeLinecap="round" opacity="0.4"/>
+    <path d="M48 65 C55 67 66 66 74 62" stroke={ink} strokeWidth="0.3" fill="none" strokeLinecap="round" opacity="0.4"/>
+    <path d="M82 61 L94 63 L82 66 Z" fill={ink}/>
+    <circle cx="68" cy="59" r="4.5" fill={paper} stroke={ink} strokeWidth="1.1"/>
+    <circle cx="68" cy="59" r="2.4" fill={ink}/><circle cx="69" cy="58" r="0.8" fill={paper}/>
+    <path d="M42 104 L38 116 M42 104 L42 116 M42 104 L46 116" stroke={ink} strokeWidth="1.1" strokeLinecap="round"/>
+    <path d="M60 105 L56 117 M60 105 L60 117 M60 105 L64 117" stroke={ink} strokeWidth="1.1" strokeLinecap="round"/>
+  </svg>
+);
+
+const Divider=({ink})=>(
+  <div style={{display:"flex",alignItems:"center",gap:12,margin:"32px 0"}}>
+    <div style={{flex:1,height:1,backgroundColor:ink,opacity:0.2}}/>
+    <svg width="20" height="20" viewBox="0 0 20 20">
+      <circle cx="10" cy="10" r="3" fill={ink} opacity="0.5"/><circle cx="10" cy="10" r="1.5" fill={ink}/>
+      <path d="M10 3L11 7L10 6L9 7ZM10 17L11 13L10 14L9 13ZM3 10L7 11L6 10L7 9ZM17 10L13 11L14 10L13 9Z" fill={ink} opacity="0.5"/>
+    </svg>
+    <div style={{flex:1,height:1,backgroundColor:ink,opacity:0.2}}/>
+  </div>
+);
+
+const Stamp=({children,ink,style})=>(
+  <div style={{backgroundColor:CREAM,border:`1.5px solid ${ink}`,outline:`4px solid ${ink}`,outlineOffset:"-8px",borderRadius:3,padding:24,...style}}>{children}</div>
+);
+
+const Corners=({ink})=>(
+  <>
+    {[{t:14,l:14,sx:1,sy:1},{t:14,r:14,sx:-1,sy:1},{b:14,l:14,sx:1,sy:-1},{b:14,r:14,sx:-1,sy:-1}].map((pos,i)=>(
+      <svg key={i} style={{position:"absolute",...pos,transform:`scale(${pos.sx||1},${pos.sy||1})`}} width="44" height="44" viewBox="0 0 44 44" fill="none">
+        <path d="M2 2L24 2M2 2L2 24" stroke={ink} strokeWidth="1.4" strokeLinecap="round"/>
+        <circle cx="2" cy="2" r="2" fill={ink}/>
+      </svg>
+    ))}
+  </>
+);
+
+function App(){
+  const [inkId,setInkId]=useState("cobalto");
+  const [tab,setTab]=useState("historia");
+  const ink=INKS[inkId];
+  const fd="'Playfair Display',serif",fb="'Source Serif 4',serif",fm="'DM Mono',monospace";
+  const tabs=[{id:"historia",label:"Historia"},{id:"identidad",label:"Identidad"},{id:"colores",label:"Colores"},{id:"tipo",label:"Tipografía"},{id:"empaque",label:"Empaque"},{id:"voz",label:"Voz"}];
+
+  return(
+    <div style={{backgroundColor:CREAM,minHeight:"100vh",fontFamily:fb,color:DARK,transition:"all 0.35s"}}>
+      <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+      <header style={{position:"sticky",top:0,zIndex:50,backgroundColor:CREAM+"F5",backdropFilter:"blur(16px)",borderBottom:`1.5px solid ${ink.hex}25`}}>
+        <div style={{maxWidth:960,margin:"0 auto",padding:"0 28px"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 0"}}>
+            <div style={{display:"flex",alignItems:"center",gap:14}}>
+              <Bird size={38} ink={ink.hex} paper={CREAM} frame={false}/>
+              <div>
+                <div style={{fontFamily:fd,fontWeight:700,fontSize:17,color:DARK,letterSpacing:"0.06em"}}>CANARIO</div>
+                <div style={{fontFamily:fm,fontSize:9,color:ink.hex,letterSpacing:"0.16em"}}>DE CUERNA · BRAND BOOK</div>
+              </div>
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <span style={{fontFamily:fm,fontSize:9,color:DARK,opacity:0.45,letterSpacing:"0.1em"}}>TINTA</span>
+              {Object.entries(INKS).map(([id,v])=>(
+                <button key={id} onClick={()=>setInkId(id)} title={v.name}
+                  style={{width:22,height:22,borderRadius:"50%",backgroundColor:v.hex,border:inkId===id?`3px solid ${DARK}`:"2px solid transparent",cursor:"pointer",outline:inkId===id?`2px solid ${CREAM}`:"none",outlineOffset:1}}/>
+              ))}
+            </div>
+          </div>
+          <div style={{display:"flex",gap:0,borderTop:`1px solid ${ink.hex}18`}}>
+            {tabs.map(t=>(
+              <button key={t.id} onClick={()=>setTab(t.id)}
+                style={{padding:"8px 18px",fontFamily:fb,fontSize:12,fontWeight:tab===t.id?600:400,fontStyle:tab===t.id?"italic":"normal",color:tab===t.id?ink.hex:DARK,opacity:tab===t.id?1:0.5,background:"transparent",border:"none",cursor:"pointer",position:"relative",letterSpacing:"0.02em",whiteSpace:"nowrap"}}>
+                {t.label}
+                {tab===t.id&&<div style={{position:"absolute",bottom:0,left:14,right:14,height:2,backgroundColor:ink.hex,borderRadius:1}}/>}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      <main style={{maxWidth:960,margin:"0 auto",padding:"0 28px 80px"}}>
+
+        {tab==="historia"&&(
+          <div>
+            <div style={{backgroundColor:YELLOW,margin:"0 -28px",padding:"60px 56px",position:"relative",overflow:"hidden"}}>
+              <Corners ink={ink.hex}/>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:32,position:"relative"}}>
+                <div style={{flex:1,minWidth:260}}>
+                  <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.22em",textTransform:"uppercase",marginBottom:18}}>Morelos, México · Est. 2026</div>
+                  <h1 style={{fontFamily:fd,fontWeight:900,fontSize:"clamp(56px,9vw,92px)",color:ink.hex,lineHeight:0.88,letterSpacing:"-0.02em",margin:"0 0 20px"}}>CANARIO</h1>
+                  <div style={{fontFamily:fd,fontWeight:400,fontStyle:"italic",fontSize:20,color:DARK,marginBottom:20,opacity:0.8}}>"El sabor de la primavera conservado."</div>
+                  <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                    {["Canario de Cuerna","La Canaria","Canario & Co.","Amarillo Legado"].map(n=>(
+                      <span key={n} style={{fontFamily:fb,fontSize:11,color:ink.hex,border:`1px solid ${ink.hex}`,borderRadius:2,padding:"4px 10px"}}>{n}</span>
+                    ))}
+                  </div>
+                </div>
+                <Bird size={210} ink={ink.hex} paper={CREAM}/>
+              </div>
+            </div>
+            <div style={{paddingTop:52}}>
+              <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:24}}>§ 01 · Concepto de Marca</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:32}}>
+                {[
+                  {t:"El Origen",c:"Cuernavaca — donde la primavera es eterna. El jitomate, el epazote, el maíz azul de Morelos. Conservados en frío para llegar cada semana a tu mesa con todo el sabor de la tierra caliente."},
+                  {t:"La Familia",c:"Un niño curioso y un abuelo paciente bajo el mismo árbol de mango. Canario nace de esa imagen: dos etapas de vida que comparten la mesa, el tiempo y la memoria del sabor."},
+                  {t:"La Conserva Mexicana",c:"Como las conservas portuguesas llevan el mar en una lata, Canario lleva Morelos en cada porción. Nutrición con historia, no con ingredientes anónimos."},
+                  {t:"El Lujo Accesible",c:"Un producto de autor no tiene que ser inalcanzable. Canario es el regalo de la semana: empaque que parece obra de arte, precio que cabe en el presupuesto familiar."},
+                ].map(({t,c})=>(
+                  <Stamp key={t} ink={ink.hex} style={{display:"flex",flexDirection:"column",gap:10}}>
+                    <div style={{fontFamily:fd,fontWeight:700,fontSize:15,color:DARK}}>{t}</div>
+                    <div style={{fontFamily:fb,fontSize:13,color:DARK,lineHeight:1.75,opacity:0.75}}>{c}</div>
+                  </Stamp>
+                ))}
+              </div>
+              <Divider ink={ink.hex}/>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:0,border:`1.5px solid ${ink.hex}`,borderRadius:4}}>
+                {[
+                  {n:"I",t:"Origen trazable",d:"Ingredientes de Morelos con nombre y procedencia."},
+                  {n:"II",t:"Cadena de frío",d:"Del campo a tu puerta sin romper la cadena."},
+                  {n:"III",t:"Dos generaciones",d:"Porciones para niños y adultos mayores."},
+                  {n:"IV",t:"Boutique semanal",d:"Tu canasta: un regalo de autor cada lunes."},
+                ].map(({n,t,d},i)=>(
+                  <div key={n} style={{padding:20,borderRight:i<3?`1px solid ${ink.hex}20`:"none"}}>
+                    <div style={{fontFamily:fd,fontStyle:"italic",fontSize:28,color:ink.hex,opacity:0.4,lineHeight:1,marginBottom:8}}>{n}</div>
+                    <div style={{fontFamily:fd,fontWeight:700,fontSize:13,color:DARK,marginBottom:6}}>{t}</div>
+                    <div style={{fontFamily:fb,fontSize:11,color:DARK,opacity:0.6,lineHeight:1.65}}>{d}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab==="identidad"&&(
+          <div style={{paddingTop:48}}>
+            <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:32}}>§ 02 · Identidad Visual</div>
+            <div style={{backgroundColor:YELLOW,borderRadius:8,padding:"48px 40px",marginBottom:16,display:"flex",flexDirection:"column",alignItems:"center",gap:16,position:"relative"}}>
+              <Corners ink={ink.hex}/>
+              <Bird size={170} ink={ink.hex} paper={CREAM}/>
+              <div style={{textAlign:"center"}}>
+                <div style={{fontFamily:fd,fontWeight:900,fontSize:64,color:ink.hex,letterSpacing:"0.08em",lineHeight:1}}>CANARIO</div>
+                <div style={{fontFamily:fb,fontStyle:"italic",fontSize:14,color:ink.hex,opacity:0.7,letterSpacing:"0.18em",marginTop:6}}>de Cuerna · Nutrición con Historia</div>
+              </div>
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:32}}>
+              {[
+                {bg:ink.hex,birdInk:YELLOW,paper:ink.hex,textC:YELLOW,label:"Sobre tinta"},
+                {bg:CREAM,birdInk:ink.hex,paper:CREAM,textC:DARK,label:"Sobre crema",bordered:true},
+                {bg:DARK,birdInk:YELLOW,paper:DARK,textC:YELLOW,label:"Sobre negro"},
+              ].map(({bg,birdInk,paper,textC,label,bordered})=>(
+                <div key={label} style={{backgroundColor:bg,borderRadius:8,padding:"28px 20px",display:"flex",flexDirection:"column",alignItems:"center",gap:12,border:bordered?`1px solid ${ink.hex}30`:"none"}}>
+                  <Bird size={80} ink={birdInk} paper={paper} frame={false}/>
+                  <div style={{fontFamily:fd,fontWeight:700,fontSize:20,color:textC,letterSpacing:"0.1em"}}>CANARIO</div>
+                  <div style={{fontFamily:fm,fontSize:9,color:textC,opacity:0.55,letterSpacing:"0.1em"}}>{label}</div>
+                </div>
+              ))}
+            </div>
+            <Divider ink={ink.hex}/>
+            <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Opciones de Nombre</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12}}>
+              {[
+                {name:"CANARIO",sub:"de Cuerna · Nutrición con Historia",desc:"Simple, potente. Una sola palabra que lo dice todo. Funciona en todos los formatos.",rec:true},
+                {name:"CANARIO & CO.",sub:"Cocina de Autor · Morelos",desc:"Suena a logia de cocineros expertos. Evoca tradición y colectivo artesanal.",rec:false},
+                {name:"LA CANARIA",sub:"Abarrotes Finos · Cuernavaca",desc:"Tienda antigua del centro histórico. Calidez máxima, posicionamiento boutique.",rec:false},
+                {name:"AMARILLO LEGADO",sub:"Nutrición con Historia",desc:"Une el color emblema con la herencia familiar. Evoca memoria y continuidad.",rec:false},
+              ].map(({name,sub,desc,rec})=>(
+                <div key={name} style={{border:`1.5px solid ${rec?ink.hex:DARK+"25"}`,borderRadius:6,padding:20,backgroundColor:rec?YELLOW+"18":"transparent",position:"relative"}}>
+                  {rec&&<div style={{position:"absolute",top:10,right:12,fontFamily:fm,fontSize:8,color:ink.hex,backgroundColor:YELLOW,padding:"2px 8px",borderRadius:2,letterSpacing:"0.1em"}}>★ RECOMENDADO</div>}
+                  <div style={{fontFamily:fd,fontWeight:900,fontSize:22,color:DARK,letterSpacing:"0.05em",marginBottom:2}}>{name}</div>
+                  <div style={{fontFamily:fb,fontStyle:"italic",fontSize:12,color:ink.hex,marginBottom:10,opacity:0.85}}>{sub}</div>
+                  <div style={{fontFamily:fb,fontSize:13,color:DARK,opacity:0.65,lineHeight:1.65}}>{desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab==="colores"&&(
+          <div style={{paddingTop:48}}>
+            <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:8}}>§ 03 · Sistema de Color</div>
+            <h2 style={{fontFamily:fd,fontWeight:900,fontSize:38,color:DARK,marginBottom:8,letterSpacing:"-0.02em"}}>El Amarillo<br/><em>y su contraste.</em></h2>
+            <p style={{fontFamily:fb,fontSize:14,color:DARK,opacity:0.65,marginBottom:40,maxWidth:500,lineHeight:1.85}}>El Amarillo Canario es inamovible. Lo que cambia es su contraste. Tres propuestas de tinta. Usa el selector del header para previsualizar la marca completa en cada una.</p>
+            <div style={{display:"flex",flexDirection:"column",gap:14,marginBottom:48}}>
+              {Object.entries(INKS).map(([id,v])=>(
+                <div key={id} onClick={()=>setInkId(id)} style={{borderRadius:6,overflow:"hidden",border:`2px solid ${inkId===id?v.hex:DARK+"20"}`,cursor:"pointer",transition:"border-color 0.2s"}}>
+                  <div style={{display:"flex",height:52}}>
+                    <div style={{flex:3,backgroundColor:YELLOW}}/><div style={{flex:1,backgroundColor:v.hex}}/>
+                    <div style={{flex:1,backgroundColor:CREAM,borderLeft:`1px solid ${DARK}10`}}/><div style={{flex:0.5,backgroundColor:DARK}}/>
+                  </div>
+                  <div style={{backgroundColor:CREAM,padding:"18px 22px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16}}>
+                    <div>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3}}>
+                        <div style={{width:11,height:11,borderRadius:"50%",backgroundColor:v.hex}}/>
+                        <span style={{fontFamily:fd,fontWeight:700,fontSize:16,color:DARK}}>{v.name}</span>
+                        {inkId===id&&<span style={{fontFamily:fm,fontSize:8,color:v.hex,border:`1px solid ${v.hex}`,padding:"1px 6px",borderRadius:2,letterSpacing:"0.08em"}}>ACTIVA</span>}
+                      </div>
+                      <div style={{fontFamily:fb,fontStyle:"italic",fontSize:12,color:DARK,opacity:0.55,marginBottom:10}}>{v.label}</div>
+                      <div style={{display:"flex",gap:6}}>
+                        {[{hex:YELLOW,n:"Amarillo"},{hex:v.hex,n:v.name},{hex:CREAM,n:"Crema",b:true},{hex:DARK,n:"Tinta"}].map(s=>(
+                          <div key={s.hex} style={{display:"flex",flexDirection:"column",gap:3}}>
+                            <div style={{width:30,height:18,borderRadius:3,backgroundColor:s.hex,border:s.b?`1px solid ${DARK}20`:"none"}}/>
+                            <div style={{fontFamily:fm,fontSize:7,color:DARK,opacity:0.5}}>{s.hex}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <button onClick={e=>{e.stopPropagation();setInkId(id);}} style={{backgroundColor:v.hex,color:YELLOW,border:"none",borderRadius:4,padding:"10px 20px",fontFamily:fb,fontSize:13,fontWeight:600,cursor:"pointer",whiteSpace:"nowrap"}}>Aplicar →</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Divider ink={ink.hex}/>
+            <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:20}}>Paleta Base (constante)</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:12}}>
+              {[
+                {hex:YELLOW,name:"Amarillo Canario",role:"Primario"},
+                {hex:ink.hex,name:ink.name,role:"Tinta activa"},
+                {hex:CREAM,name:"Crema Marfil",role:"Fondo",b:true},
+                {hex:"#7A1928",name:"Rojo Lacre",role:"Sello / Error"},
+                {hex:DARK,name:"Negro Mate",role:"Texto"},
+              ].map(s=>(
+                <div key={s.name} style={{display:"flex",flexDirection:"column",gap:6}}>
+                  <div style={{height:80,borderRadius:5,backgroundColor:s.hex,border:s.b?`1px solid ${ink.hex}30`:"none"}}/>
+                  <div style={{fontFamily:fd,fontWeight:600,fontSize:12,color:DARK}}>{s.name}</div>
+                  <div style={{fontFamily:fm,fontSize:10,color:ink.hex}}>{s.hex}</div>
+                  <div style={{fontFamily:fm,fontSize:9,color:DARK,opacity:0.45,textTransform:"uppercase",letterSpacing:"0.06em"}}>{s.role}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab==="tipo"&&(
+          <div style={{paddingTop:48}}>
+            <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:32}}>§ 04 · Sistema Tipográfico</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:16,marginBottom:40}}>
+              {[
+                {role:"Display",family:"Playfair Display",desc:"Para el nombre, títulos y etiquetas de lata.",sample:"CANARIO",size:38,fw:900,fi:false},
+                {role:"Editorial",family:"Playfair Display Italic",desc:"Para citas, historias y textos con carácter.",sample:'"El canario canta cuando el aire es sano."',size:16,fw:400,fi:true},
+                {role:"Cuerpo",family:"Source Serif 4",desc:"Para descripciones, ingredientes y textos corridos.",sample:"Pollo de rancho, jitomate de Morelos, epazote.",size:14,fw:400,fi:false},
+              ].map(({role,family,desc,sample,size,fw,fi})=>(
+                <Stamp key={role} ink={ink.hex} style={{display:"flex",flexDirection:"column",gap:12}}>
+                  <div style={{fontFamily:fm,fontSize:9,color:ink.hex,letterSpacing:"0.12em",textTransform:"uppercase"}}>{role}</div>
+                  <div style={{fontFamily:fd,fontSize:size,fontWeight:fw,fontStyle:fi?"italic":"normal",color:DARK,lineHeight:1.2,flex:1}}>{sample}</div>
+                  <div style={{fontFamily:fm,fontSize:10,color:DARK,opacity:0.45}}>{family}</div>
+                  <div style={{fontFamily:fb,fontSize:12,color:DARK,opacity:0.6,lineHeight:1.6}}>{desc}</div>
+                </Stamp>
+              ))}
+            </div>
+            <div style={{border:`1.5px solid ${ink.hex}20`,borderRadius:6,overflow:"hidden"}}>
+              {[
+                {label:"Display 68",size:"68px",fw:900,fi:false,font:fd,text:"CANARIO"},
+                {label:"H1 · 40px",size:"40px",fw:700,fi:false,font:fd,text:"Nutre lo que amas"},
+                {label:"H2 · 28px",size:"28px",fw:700,fi:true,font:fd,text:"Tu canasta de esta semana"},
+                {label:"H3 · 20px",size:"20px",fw:600,fi:false,font:fd,text:"Platillos de la temporada"},
+                {label:"Body · 16px",size:"16px",fw:400,fi:false,font:fb,text:"Cada porción formulada con ingredientes de Morelos, conservados en frío."},
+                {label:"Italic · 14px",size:"14px",fw:400,fi:true,font:fb,text:'"El sabor que cuida dos generaciones."'},
+                {label:"Mono · 12px",size:"12px",fw:400,fi:false,font:fm,text:"300 kcal · 22g proteína · $85 MXN · Lote #240326"},
+              ].map(({label,size,fw,fi,font,text},i,arr)=>(
+                <div key={label} style={{display:"flex",alignItems:"center",gap:16,padding:"14px 20px",borderBottom:i<arr.length-1?`1px solid ${ink.hex}12`:"none",backgroundColor:i%2===0?CREAM:"#F8F2E8"}}>
+                  <div style={{fontFamily:fm,fontSize:9,color:DARK,opacity:0.4,minWidth:100,flexShrink:0}}>{label}</div>
+                  <div style={{fontFamily:font,fontSize:size,fontWeight:fw,fontStyle:fi?"italic":"normal",color:DARK,lineHeight:1.15,flex:1}}>{text}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab==="empaque"&&(
+          <div style={{paddingTop:48}}>
+            <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:32}}>§ 05 · Sistema de Empaque</div>
+            <div style={{backgroundColor:DARK,borderRadius:12,padding:32,marginBottom:20}}>
+              <div style={{display:"flex",gap:20,alignItems:"flex-start",flexWrap:"wrap"}}>
+                <div style={{flex:"0 0 auto"}}>
+                  <div style={{fontFamily:fm,fontSize:8,color:CREAM,opacity:0.35,marginBottom:8,letterSpacing:"0.1em"}}>ETIQUETA / FRENTE</div>
+                  <div style={{backgroundColor:YELLOW,borderRadius:6,padding:"22px 18px",border:`3px solid ${ink.hex}`,position:"relative",overflow:"hidden",width:200,minHeight:270}}>
+                    <div style={{position:"absolute",inset:6,border:`1px solid ${ink.hex}35`,borderRadius:3,pointerEvents:"none"}}/>
+                    <div style={{fontFamily:fm,fontSize:7,color:ink.hex,letterSpacing:"0.18em",textAlign:"center",textTransform:"uppercase",marginBottom:10}}>Morelos · México · Cadena de Frío</div>
+                    <div style={{display:"flex",justifyContent:"center",marginBottom:6}}><Bird size={88} ink={ink.hex} paper={YELLOW}/></div>
+                    <div style={{fontFamily:fd,fontWeight:900,fontSize:30,color:ink.hex,letterSpacing:"0.06em",textAlign:"center",lineHeight:0.9,marginBottom:4}}>CANARIO</div>
+                    <div style={{fontFamily:fb,fontStyle:"italic",fontSize:10,color:ink.hex,opacity:0.7,textAlign:"center",marginBottom:12,letterSpacing:"0.1em"}}>de Cuerna</div>
+                    <div style={{borderTop:`1px solid ${ink.hex}35`,paddingTop:10,textAlign:"center"}}>
+                      <div style={{fontFamily:fd,fontWeight:700,fontSize:13,color:ink.hex}}>Pollo con Verduras</div>
+                      <div style={{fontFamily:fm,fontSize:7,color:ink.hex,opacity:0.6,marginTop:2,letterSpacing:"0.1em"}}>NIÑOS · 2–12 AÑOS · 300 KCAL</div>
+                    </div>
+                  </div>
+                </div>
+                <div style={{flex:"0 0 auto"}}>
+                  <div style={{fontFamily:fm,fontSize:8,color:CREAM,opacity:0.35,marginBottom:8,letterSpacing:"0.1em"}}>LATERAL</div>
+                  <div style={{backgroundColor:ink.hex,borderRadius:4,padding:"18px 8px",minHeight:270,width:70,display:"flex",flexDirection:"column",justifyContent:"space-between",alignItems:"center"}}>
+                    <div style={{fontFamily:fd,fontWeight:700,fontSize:9,color:YELLOW,letterSpacing:"0.1em",writingMode:"vertical-rl",transform:"rotate(180deg)",textAlign:"center"}}>CANARIO · DE CUERNA</div>
+                    <Bird size={38} ink={YELLOW} paper={ink.hex} frame={false}/>
+                    <div style={{fontFamily:fm,fontSize:7,color:YELLOW,opacity:0.55,writingMode:"vertical-rl",transform:"rotate(180deg)",letterSpacing:"0.06em"}}>❄️ FRÍO · MX-2026</div>
+                  </div>
+                </div>
+                <div style={{flex:1,minWidth:200}}>
+                  <div style={{fontFamily:fm,fontSize:8,color:CREAM,opacity:0.35,marginBottom:8,letterSpacing:"0.1em"}}>CANASTA SEMANAL</div>
+                  <div style={{backgroundColor:ink.hex,borderRadius:8,border:`1.5px solid ${ink.light}25`,padding:20,minHeight:270,display:"flex",flexDirection:"column",gap:10}}>
+                    <div style={{fontFamily:fd,fontWeight:700,fontSize:14,color:YELLOW,marginBottom:2}}>Canasta · Semana 12</div>
+                    {[
+                      {n:"Pollo con verduras",t:"🧒 Niños",k:300,p:22},
+                      {n:"Salmón con amaranto",t:"👴 Mayores",k:360,p:26},
+                      {n:"Pasta de maíz azul",t:"🧒 Niños",k:255,p:14},
+                      {n:"Caldo tlalpeño",t:"👴 Mayores",k:180,p:18},
+                    ].map(({n,t,k,p})=>(
+                      <div key={n} style={{backgroundColor:YELLOW+"18",borderRadius:5,padding:"9px 12px",display:"flex",justifyContent:"space-between",alignItems:"center",border:`1px solid ${YELLOW}25`}}>
+                        <div>
+                          <div style={{fontFamily:fd,fontWeight:600,fontSize:12,color:YELLOW}}>{n}</div>
+                          <div style={{fontFamily:fm,fontSize:9,color:YELLOW,opacity:0.55,marginTop:1}}>{t}</div>
+                        </div>
+                        <div style={{fontFamily:fm,fontSize:9,color:YELLOW,opacity:0.7,textAlign:"right"}}><div>{k} kcal</div><div>{p}g prot</div></div>
+                      </div>
+                    ))}
+                    <div style={{borderTop:`1px solid ${YELLOW}18`,paddingTop:8,fontFamily:fb,fontStyle:"italic",fontSize:11,color:YELLOW,opacity:0.55,lineHeight:1.6}}>"La historia de cómo el frío de Morelos conserva el sabor de la primavera."</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <Divider ink={ink.hex}/>
+            <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:14}}>Sellos & Etiquetas</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:9,padding:22,border:`1px solid ${ink.hex}18`,borderRadius:8,backgroundColor:"#F8F2E8",marginBottom:22}}>
+              {[
+                {l:"🧒 Niños · 2–12",bg:YELLOW,tx:ink.hex},
+                {l:"👴 Adultos Mayores",bg:ink.hex,tx:YELLOW},
+                {l:"🌿 Psiconutritivo",bg:"#F0FDF4",tx:"#166534"},
+                {l:"❄️ Cadena de Frío",bg:"#EFF6FF",tx:"#1E40AF"},
+                {l:"📍 Ingredientes Morelos",bg:ink.light,tx:ink.hex},
+                {l:"⭐ Elección Semanal",bg:YELLOW,tx:DARK},
+                {l:"🫙 Conserva Artesanal",bg:DARK,tx:YELLOW},
+                {l:"🌾 Sin Gluten",bg:CREAM,tx:DARK,b:true},
+              ].map(({l,bg,tx,b})=>(
+                <span key={l} style={{display:"inline-block",borderRadius:3,padding:"7px 13px",backgroundColor:bg,color:tx,fontFamily:fb,fontSize:12,fontWeight:600,border:b?`1px solid ${ink.hex}20`:"none"}}>{l}</span>
+              ))}
+            </div>
+            <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:12}}>Botones</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:10,padding:22,backgroundColor:DARK,borderRadius:8}}>
+              {[
+                {l:"Agregar a mi canasta",bg:YELLOW,tx:DARK,brd:"none"},
+                {l:"Ver esta semana",bg:ink.hex,tx:YELLOW,brd:"none"},
+                {l:"Conocer el origen",bg:"transparent",tx:CREAM,brd:`1px solid ${CREAM}40`},
+              ].map(({l,bg,tx,brd})=>(
+                <button key={l} style={{backgroundColor:bg,color:tx,border:brd,borderRadius:3,padding:"12px 22px",fontFamily:fb,fontSize:14,fontWeight:600,cursor:"pointer"}}>{l}</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tab==="voz"&&(
+          <div style={{paddingTop:48}}>
+            <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.18em",textTransform:"uppercase",marginBottom:32}}>§ 06 · Voz & Tono</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 2fr",gap:28,marginBottom:48,alignItems:"start"}}>
+              <div>
+                <div style={{fontFamily:fd,fontWeight:700,fontStyle:"italic",fontSize:26,color:DARK,lineHeight:1.25,marginBottom:20}}>"Una marca habla como las personas que la hacen."</div>
+                <Bird size={140} ink={ink.hex} paper={CREAM}/>
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                {[
+                  {trait:"Cálido · no empalagoso",yes:'"Tu canasta llega el lunes. Esta semana hay algo especial de Cuernavaca."',no:'"¡Hola! 🎉 Tu SUPER PEDIDO INCREÍBLE está en camino!!!"'},
+                  {trait:"Culto · no críptico",yes:'"El epazote viene de una milpa en Tepoztlán. Le da ese sabor que no puedes fingir."',no:'"Contiene flavonoides biodisponibles y compuestos fenólicos antioxidantes."'},
+                  {trait:"Autor · sin arrogancia",yes:'"Este platillo lo desarrollamos con una abuela de Jiutepec. El tiempo es el mejor ingrediente."',no:'"Producto gourmet premium elaborado por chefs especializados."'},
+                  {trait:"Alegre · sin infantilizar",yes:'"El canario canta cuando la comida es buena. Esta semana canta fuerte."',no:'"¡Yayyy!! 🐣🌟 ¡¡QUÉ RICO!!"'},
+                ].map(({trait,yes,no})=>(
+                  <div key={trait} style={{border:`1px solid ${ink.hex}18`,borderRadius:5,overflow:"hidden"}}>
+                    <div style={{padding:"8px 16px",backgroundColor:YELLOW}}>
+                      <span style={{fontFamily:fd,fontWeight:700,fontSize:13,color:ink.hex}}>{trait}</span>
+                    </div>
+                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr"}}>
+                      <div style={{padding:14,backgroundColor:"#F0FDF4",borderRight:`1px solid ${ink.hex}12`}}>
+                        <div style={{fontFamily:fm,fontSize:8,color:"#166534",marginBottom:5,letterSpacing:"0.08em"}}>✅ SÍ</div>
+                        <div style={{fontFamily:fb,fontStyle:"italic",fontSize:12,color:DARK,lineHeight:1.6}}>{yes}</div>
+                      </div>
+                      <div style={{padding:14,backgroundColor:"#FEF2F2"}}>
+                        <div style={{fontFamily:fm,fontSize:8,color:"#991B1B",marginBottom:5,letterSpacing:"0.08em"}}>❌ NO</div>
+                        <div style={{fontFamily:fb,fontStyle:"italic",fontSize:12,color:DARK,lineHeight:1.6}}>{no}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <Divider ink={ink.hex}/>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20}}>
+              <div>
+                <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:12}}>Glosario</div>
+                <div style={{border:`1px solid ${ink.hex}18`,borderRadius:5,overflow:"hidden"}}>
+                  {[["Pedido","Canasta"],["Platillo","Porción"],["Cliente","Familia Canario"],["Entrega","Vuelo semanal"],["Ingrediente","Origen"],["Receta","Historia"]].map(([a,b],i,arr)=>(
+                    <div key={a} style={{display:"grid",gridTemplateColumns:"1fr 1fr",borderBottom:i<arr.length-1?`1px solid ${ink.hex}12`:"none"}}>
+                      <div style={{padding:"10px 16px",fontFamily:fb,fontSize:13,color:DARK,opacity:0.5}}>{a}</div>
+                      <div style={{padding:"10px 16px",fontFamily:fd,fontWeight:700,fontSize:13,color:DARK}}>{b}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <div style={{fontFamily:fm,fontSize:10,color:ink.hex,letterSpacing:"0.15em",textTransform:"uppercase",marginBottom:12}}>Reglas</div>
+                <div style={{display:"flex",flexDirection:"column",gap:7}}>
+                  {["Siempre en tú — nunca en usted ni impersonal","El ingrediente tiene historia: menciona de dónde viene","Máximo 2 oraciones por notificación push","El beneficio primero, el ingrediente técnico después","Menciona Morelos o Cuernavaca cuando sea relevante","Nunca uses 'premium' o 'gourmet' — muéstralo"].map(r=>(
+                    <div key={r} style={{fontFamily:fb,fontSize:12,color:DARK,padding:"10px 14px",border:`1px solid ${ink.hex}12`,borderRadius:4,lineHeight:1.6,backgroundColor:"#F8F2E8"}}>· {r}</div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      <footer style={{borderTop:`1.5px solid ${ink.hex}18`,padding:"20px 0"}}>
+        <div style={{maxWidth:960,margin:"0 auto",padding:"0 28px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",alignItems:"center",gap:10}}>
+            <Bird size={22} ink={ink.hex} paper={CREAM} frame={false}/>
+            <span style={{fontFamily:fm,fontSize:9,color:DARK,opacity:0.4,letterSpacing:"0.1em"}}>CANARIO DE CUERNA · {ink.name.toUpperCase()} · BRAND BOOK v2.0 · 2026</span>
+          </div>
+          <span style={{fontFamily:fm,fontSize:9,color:DARK,opacity:0.35,letterSpacing:"0.08em"}}>marca@canariodecuerna.mx</span>
+        </div>
+      </footer>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>

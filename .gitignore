@@ -1,0 +1,19 @@
+# Dependencias
+node_modules/
+
+# Cloudflare Wrangler
+.wrangler/
+
+# Claude
+.claude/
+
+# Datos / scraping
+*.csv
+*_progreso.json
+scrape_*.mjs
+
+# Backups
+*.bak.html
+
+# Build
+dist/

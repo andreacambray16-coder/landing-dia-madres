@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guayaba Go! — Brand Guidelines v2</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+  <style>* { margin: 0; padding: 0; box-sizing: border-box; }</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    // ─── Paleta completamente nueva ─────────────────────────────────────────────
+    const colors = {
+      green: {
+        50:"#E6F5EE", 100:"#C2E5D0", 200:"#90CDA8", 300:"#5EB482",
+        400:"#3A9B67", 500:"#2E7D52", 600:"#22613F", 700:"#17452D",
+        800:"#0E2B1C", 900:"#071510", 950:"#030A08",
+      },
+      coral: {
+        50:"#FFF1EE", 100:"#FFD9D2", 200:"#FFB3A5", 300:"#FF8C77",
+        400:"#FF6650", 500:"#FF4D35", 600:"#E83520", 700:"#C0251B",
+        800:"#941717", 900:"#630E0E", 950:"#360505",
+      },
+      gold: {
+        50:"#FFFBEB", 100:"#FFF3C4", 200:"#FFE788", 300:"#FFD84D",
+        400:"#FFC72C", 500:"#F5AE00", 600:"#D48F00", 700:"#A86D00",
+        800:"#7A4D00", 900:"#4D2E00", 950:"#271700",
+      },
+      peach: {
+        50:"#FFF5F0", 100:"#FFE8DC", 200:"#FFD0B8", 300:"#FFB894",
+        400:"#FF9C6E", 500:"#F5804A", 600:"#D46030", 700:"#A8421C",
+        800:"#7A2A0E", 900:"#4D1507", 950:"#280804",
+      },
+      neutral: {
+        50:"#FFF6ED", 100:"#FFF0E0", 200:"#EDE0CE", 300:"#D4C4AC",
+        400:"#B09880", 500:"#8C705A", 600:"#664E3C", 700:"#42302A",
+        800:"#271A14", 900:"#160D09", 950:"#0A0604",
+      },
+    };
+
+    const ui = {
+      bg:      "#FFF6ED",
+      bgCard:  "#FFF0E0",
+      text:    "#1C2B1A",
+      textSec: "#664E3C",
+      border:  "#EDE0CE",
+      deep:    "#1C2B1A",
+      primary: "#3A9B67",
+      cta:     "#FF4D35",
+      energy:  "#FFC72C",
+    };
+
+    const fonts = {
+      display: "'Syne', sans-serif",
+      body:    "'DM Sans', sans-serif",
+      ui:      "'Space Grotesk', sans-serif",
+    };
+
+    // ─── Sub-components ─────────────────────────────────────────────────────────
+    const Chip = ({ children, color }) => (
+      <span style={{
+        display:"inline-block", padding:"5px 14px", borderRadius:99,
+        backgroundColor: color || colors.green[100],
+        color: ui.text, fontFamily: fonts.ui, fontSize:12, fontWeight:500,
+      }}>{children}</span>
+    );
+
+    const Card = ({ children, style }) => (
+      <div style={{ backgroundColor:ui.bgCard, border:`1px solid ${ui.border}`, borderRadius:16, padding:20, ...style }}>
+        {children}
+      </div>
+    );
+
+    const Section = ({ title, number, children }) => (
+      <div style={{ marginBottom:56 }}>
+        <div style={{ display:"flex", alignItems:"baseline", gap:12, marginBottom:24 }}>
+          <span style={{ fontFamily:fonts.ui, color:ui.cta, fontSize:11, letterSpacing:"0.14em" }}>{number}</span>
+          <h2 style={{ fontFamily:fonts.display, fontWeight:800, fontSize:28, color:ui.text }}>{title}</h2>
+        </div>
+        {children}
+      </div>
+    );
+
+    const ColorSwatch = ({ name, hex, subtitle, tall }) => (
+      <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
+        <div style={{ backgroundColor:hex, height:tall?96:60, borderRadius:12, border:`1px solid ${ui.border}` }} />
+        <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:11 }}>{hex}</span>
+        <span style={{ fontFamily:fonts.ui, color:ui.text, fontSize:12, fontWeight:600 }}>{name}</span>
+        {subtitle && <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:11 }}>{subtitle}</span>}
+      </div>
+    );
+
+    // ─── Logo: Hoja de guayaba con nervadura coral ───────────────────────────────
+    const GuayabaLeaf = ({ size = 40, variant = "dark" }) => {
+      const leafFill  = variant === "dark" ? ui.deep : "#FFF6ED";
+      const ribColor  = variant === "dark" ? ui.cta  : colors.gold[400];
+      const veinColor = variant === "dark" ? colors.green[400] : colors.green[200];
+      const w = Math.round(size * 0.7);
+      const h = size;
+      return (
+        <svg width={w} height={h} viewBox="0 0 28 40" fill="none">
+          {/* Hoja — forma oval con punta, proporciones de hoja de guayaba */}
+          <path d="M14 2 C22 2 27 9 27 20 C27 31 22 38 14 39 C6 38 1 31 1 20 C1 9 6 2 14 2Z"
+            fill={leafFill} />
+          {/* Nervadura central — la línea de energía coral */}
+          <path d="M14 2 C13.5 14 14 26 14 39"
+            stroke={ribColor} strokeWidth="2.8" strokeLinecap="round" fill="none" />
+          {/* Nervaduras laterales — característica del guayabo */}
+          <line x1="14" y1="9"  x2="8"  y2="13" stroke={veinColor} strokeWidth="1" strokeLinecap="round" opacity="0.9"/>
+          <line x1="14" y1="9"  x2="20" y2="13" stroke={veinColor} strokeWidth="1" strokeLinecap="round" opacity="0.9"/>
+          <line x1="14" y1="16" x2="6"  y2="20" stroke={veinColor} strokeWidth="1" strokeLinecap="round" opacity="0.9"/>
+          <line x1="14" y1="16" x2="22" y2="20" stroke={veinColor} strokeWidth="1" strokeLinecap="round" opacity="0.9"/>
+          <line x1="14" y1="24" x2="7"  y2="29" stroke={veinColor} strokeWidth="1" strokeLinecap="round" opacity="0.9"/>
+          <line x1="14" y1="24" x2="21" y2="29" stroke={veinColor} strokeWidth="1" strokeLinecap="round" opacity="0.9"/>
+          <line x1="14" y1="31" x2="9"  y2="35" stroke={veinColor} strokeWidth="0.8" strokeLinecap="round" opacity="0.7"/>
+          <line x1="14" y1="31" x2="19" y2="35" stroke={veinColor} strokeWidth="0.8" strokeLinecap="round" opacity="0.7"/>
+          {/* Tallo */}
+          <line x1="14" y1="39" x2="13" y2="42" stroke={leafFill === ui.deep ? colors.green[700] : colors.green[300]}
+            strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      );
+    };
+
+    const Wordmark = ({ variant = "dark", size = 30 }) => {
+      const textColor   = variant === "dark" ? ui.text    : "#FFF6ED";
+      const accentColor = variant === "dark" ? ui.cta     : colors.gold[400];
+      return (
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <GuayabaLeaf size={Math.round(size * 1.5)} variant={variant} />
+          <div style={{ display:"flex", flexDirection:"column", lineHeight:0.88 }}>
+            <span style={{ fontFamily:fonts.display, fontWeight:800, fontSize:size,
+              color:textColor, letterSpacing:"-0.03em" }}>Guayaba</span>
+            <span style={{ fontFamily:fonts.display, fontWeight:800,
+              fontSize:Math.round(size*1.15), color:accentColor,
+              letterSpacing:"-0.04em", marginTop:2 }}>Go!</span>
+          </div>
+        </div>
+      );
+    };
+
+    // ─── Main Component ──────────────────────────────────────────────────────────
+    function GuayabaGoBrandV2() {
+      const [tab, setTab] = useState("overview");
+
+      const tabs = [
+        { id:"overview",     label:"Overview"   },
+        { id:"logo",         label:"Logo"       },
+        { id:"colors",       label:"Colores"    },
+        { id:"typography",   label:"Tipografía" },
+        { id:"voice",        label:"Voz & Tono" },
+        { id:"applications", label:"Aplicaciones" },
+      ];
+
+      return (
+        <div style={{ backgroundColor:ui.bg, minHeight:"100vh", fontFamily:fonts.body }}>
+
+          {/* Header */}
+          <header style={{ position:"sticky", top:0, zIndex:50,
+            backgroundColor:ui.bg+"F2", backdropFilter:"blur(24px)",
+            borderBottom:`1px solid ${ui.border}` }}>
+            <div style={{ maxWidth:1152, margin:"0 auto", padding:"16px 24px 0",
+              display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+              <Wordmark size={22} />
+              <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:11,
+                letterSpacing:"0.08em" }}>BRAND GUIDELINES v2.0</span>
+            </div>
+            <nav style={{ maxWidth:1152, margin:"0 auto", padding:"10px 24px 0",
+              display:"flex", gap:0, overflowX:"auto" }}>
+              {tabs.map(t => (
+                <button key={t.id} onClick={() => setTab(t.id)} style={{
+                  fontFamily:fonts.ui, fontSize:12, letterSpacing:"0.05em",
+                  color: tab===t.id ? ui.text : ui.textSec,
+                  fontWeight: tab===t.id ? 600 : 400,
+                  background:"none", border:"none", cursor:"pointer",
+                  padding:"8px 16px", position:"relative", whiteSpace:"nowrap",
+                }}>
+                  {t.label}
+                  {tab===t.id && <div style={{ position:"absolute", bottom:0,
+                    left:16, right:16, height:2, borderRadius:99,
+                    backgroundColor:ui.cta }} />}
+                </button>
+              ))}
+            </nav>
+          </header>
+
+          <main style={{ maxWidth:1152, margin:"0 auto", padding:"48px 24px" }}>
+
+            {/* ══ OVERVIEW ══ */}
+            {tab === "overview" && (
+              <div>
+                {/* Hero — fondo oscuro, tipografía grande */}
+                <div style={{ backgroundColor:ui.deep, borderRadius:28,
+                  padding:"72px 48px", marginBottom:56, position:"relative", overflow:"hidden" }}>
+                  {/* Hoja decorativa de fondo */}
+                  <div style={{ position:"absolute", right:-20, top:-20, opacity:0.07 }}>
+                    <GuayabaLeaf size={320} variant="light" />
+                  </div>
+                  <p style={{ fontFamily:fonts.ui, color:colors.green[300], fontSize:11,
+                    letterSpacing:"0.2em", marginBottom:20 }}>GUAYABA GO! — ESENCIA DE MARCA</p>
+                  <h1 style={{ fontFamily:fonts.display, fontWeight:800,
+                    fontSize:"clamp(44px,7vw,80px)", color:"#FFF6ED",
+                    letterSpacing:"-0.04em", lineHeight:0.95, marginBottom:24 }}>
+                    Sano,<br />
+                    <span style={{ color:ui.cta }}>rico</span> y<br />
+                    listo para ir
+                  </h1>
+                  <p style={{ fontFamily:fonts.body, color:colors.neutral[300],
+                    fontSize:18, maxWidth:440, marginBottom:28, lineHeight:1.5 }}>
+                    Loncheras psiconutritivas para niños, entregadas semanalmente en cadena de frío.
+                  </p>
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
+                    {["Psiconutrición","Cadena de frío","Accesible","Semanal","México"].map(tag => (
+                      <span key={tag} style={{ backgroundColor:colors.green[700], color:colors.green[100],
+                        fontFamily:fonts.ui, fontWeight:500, fontSize:12,
+                        padding:"6px 14px", borderRadius:99 }}>{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <Section title="Posicionamiento" number="01">
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", gap:12 }}>
+                    {[
+                      { label:"Nombre",         value:"Guayaba Go!" },
+                      { label:"Tagline",         value:'"Sano, rico y listo para ir"' },
+                      { label:"Público",         value:"Padres de niños 4–12 años" },
+                      { label:"Mercado",         value:"México — entrega semanal" },
+                      { label:"Propuesta",       value:"Loncheras psiconutritivas en cadena de frío" },
+                      { label:"Diferenciador",   value:"Salud + practicidad + precio justo" },
+                    ].map(item => (
+                      <Card key={item.label}>
+                        <p style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:11, marginBottom:4 }}>{item.label}</p>
+                        <p style={{ fontFamily:fonts.body, color:ui.text, fontWeight:600 }}>{item.value}</p>
+                      </Card>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Pilares" number="02">
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:16 }}>
+                    {[
+                      { icon:"🌿", t:"Psiconutrición",  d:"Alimentos que nutren cuerpo y mente.", bg:colors.green[100] },
+                      { icon:"🧊", t:"Cadena de frío",   d:"Frescura garantizada de inicio a fin.", bg:colors.gold[100] },
+                      { icon:"💚", t:"Accesible",        d:"Para todas las familias, sin excepción.", bg:colors.peach[100] },
+                      { icon:"⚡", t:"Practicidad",      d:"Semanal, listo, sin complicaciones.",   bg:colors.coral[50]  },
+                    ].map(p => (
+                      <div key={p.t} style={{ backgroundColor:p.bg, borderRadius:20, padding:20,
+                        border:`1px solid ${ui.border}` }}>
+                        <div style={{ fontSize:32, marginBottom:10 }}>{p.icon}</div>
+                        <h3 style={{ fontFamily:fonts.display, fontWeight:800, fontSize:18,
+                          color:ui.text, marginBottom:6 }}>{p.t}</h3>
+                        <p style={{ fontFamily:fonts.body, color:ui.textSec, fontSize:14 }}>{p.d}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Personalidad" number="03">
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:10, marginBottom:16 }}>
+                    {[
+                      { w:"Alegre",    bg:colors.gold[400]  },
+                      { w:"Confiable", bg:colors.green[400] },
+                      { w:"Fresca",    bg:colors.green[300] },
+                      { w:"Cercana",   bg:colors.peach[400] },
+                      { w:"Traviesa",  bg:colors.coral[500] },
+                    ].map(p => (
+                      <div key={p.w} style={{ backgroundColor:p.bg, borderRadius:14,
+                        padding:"14px 8px", textAlign:"center" }}>
+                        <span style={{ fontFamily:fonts.display, fontWeight:800, fontSize:14,
+                          color:"#FFF6ED" }}>{p.w}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ padding:16, borderRadius:14, backgroundColor:colors.coral[50],
+                    border:`1px solid ${colors.coral[200]}`, display:"flex", flexWrap:"wrap", gap:8, alignItems:"center" }}>
+                    <span style={{ fontFamily:fonts.ui, color:colors.coral[700], fontSize:12, fontWeight:600 }}>❌ No somos:</span>
+                    {["Clínica/medicinal","Fast food disfrazada","Elitista","Aburrida"].map(t => (
+                      <Chip key={t} color={colors.coral[100]}>{t}</Chip>
+                    ))}
+                  </div>
+                </Section>
+              </div>
+            )}
+
+            {/* ══ LOGO ══ */}
+            {tab === "logo" && (
+              <div>
+                <Section title="Concepto: La hoja" number="01">
+                  <p style={{ fontFamily:fonts.body, color:ui.textSec, fontSize:16,
+                    maxWidth:600, marginBottom:32, lineHeight:1.6 }}>
+                    El isotipo es una <strong style={{color:ui.text}}>hoja de guayaba</strong> — el órgano más
+                    reconocible del árbol. La nervadura central en coral es la línea de energía
+                    de la marca: el <em>Go!</em> que corre de arriba a abajo.
+                  </p>
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20, marginBottom:24 }}>
+                    {[
+                      { bg:"#FFF6ED", label:"Sobre crema (principal)", border:true, v:"dark" },
+                      { bg:ui.deep,   label:"Sobre oscuro (inverso)",  border:false, v:"light" },
+                      { bg:colors.green[100], label:"Sobre verde claro", border:true, v:"dark" },
+                      { bg:ui.cta,    label:"Sobre coral CTA",         border:false, v:"light" },
+                    ].map(({ bg, label, border, v }) => (
+                      <div key={label}>
+                        <p style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:11, marginBottom:8 }}>{label}</p>
+                        <div style={{ backgroundColor:bg, borderRadius:20, padding:"40px 32px",
+                          display:"flex", alignItems:"center", justifyContent:"center",
+                          border: border ? `1px solid ${ui.border}` : "none" }}>
+                          <Wordmark variant={v} size={30} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Isotipo solo" number="02">
+                  <div style={{ display:"flex", flexWrap:"wrap", gap:20 }}>
+                    {[
+                      { bg:"#FFF6ED", label:"Crema", border:true, v:"dark" },
+                      { bg:ui.deep,   label:"Bosque oscuro", v:"light" },
+                      { bg:colors.green[400], label:"Verde guayaba", v:"light" },
+                      { bg:ui.cta,    label:"Coral CTA", v:"light" },
+                      { bg:colors.gold[400],  label:"Dorado", v:"dark" },
+                    ].map(({ bg, label, border, v }) => (
+                      <div key={label} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:8 }}>
+                        <div style={{ backgroundColor:bg, width:96, height:96, borderRadius:20,
+                          display:"flex", alignItems:"center", justifyContent:"center",
+                          border: border ? `1px solid ${ui.border}` : "none" }}>
+                          <GuayabaLeaf size={56} variant={v} />
+                        </div>
+                        <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:11 }}>{label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Anatomía" number="03">
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20 }}>
+                    <div style={{ backgroundColor:colors.neutral[100], borderRadius:20, padding:40,
+                      display:"flex", alignItems:"center", justifyContent:"center" }}>
+                      <GuayabaLeaf size={200} variant="dark" />
+                    </div>
+                    <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                      {[
+                        { color:ui.deep,          label:"Cuerpo de la hoja",     hex:"#1C2B1A", desc:"Verde bosque profundo — estabilidad y naturaleza" },
+                        { color:ui.cta,           label:"Nervadura central",      hex:"#FF4D35", desc:"Coral Go! — la línea de energía y velocidad" },
+                        { color:colors.green[400],label:"Nervaduras laterales",   hex:"#3A9B67", desc:"Verde guayaba — frescura y vitalidad" },
+                        { color:colors.green[700],label:"Tallo",                  hex:"#17452D", desc:"Verde oscuro — raíz y origen" },
+                      ].map(item => (
+                        <div key={item.label} style={{ display:"flex", alignItems:"center", gap:12,
+                          padding:12, borderRadius:12, border:`1px solid ${ui.border}` }}>
+                          <div style={{ width:32, height:32, borderRadius:8, backgroundColor:item.color,
+                            border:`1px solid ${ui.border}`, flexShrink:0 }} />
+                          <div>
+                            <p style={{ fontFamily:fonts.ui, fontSize:13, fontWeight:600, color:ui.text }}>
+                              {item.label} <span style={{ color:ui.textSec, fontWeight:400 }}>— {item.hex}</span>
+                            </p>
+                            <p style={{ fontFamily:fonts.body, fontSize:12, color:ui.textSec }}>{item.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </Section>
+              </div>
+            )}
+
+            {/* ══ COLORS ══ */}
+            {tab === "colors" && (
+              <div>
+                <Section title="Paleta Principal" number="01">
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(6,1fr)", gap:16, marginBottom:8 }}>
+                    <ColorSwatch name="Bosque"       hex={ui.deep}           subtitle="Texto / base ★"  tall />
+                    <ColorSwatch name="Verde Guayaba" hex={colors.green[400]} subtitle="Primario ★"     tall />
+                    <ColorSwatch name="Coral Go!"    hex={ui.cta}            subtitle="CTA ★"           tall />
+                    <ColorSwatch name="Dorado"       hex={colors.gold[400]}  subtitle="Energía ★"       tall />
+                    <ColorSwatch name="Durazno"      hex={colors.peach[300]} subtitle="Secundario"      tall />
+                    <ColorSwatch name="Crema"        hex={ui.bg}             subtitle="Fondo base"      tall />
+                  </div>
+                </Section>
+
+                <Section title="Verde Guayaba — Escala" number="02">
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(11,1fr)", gap:6 }}>
+                    {Object.entries(colors.green).map(([k,v]) => (
+                      <div key={k} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
+                        <div style={{ backgroundColor:v, width:"100%", aspectRatio:"1", borderRadius:8,
+                          border:`1px solid ${ui.border}` }} />
+                        <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:9 }}>{k}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Coral Go! — Escala" number="03">
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(11,1fr)", gap:6 }}>
+                    {Object.entries(colors.coral).map(([k,v]) => (
+                      <div key={k} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
+                        <div style={{ backgroundColor:v, width:"100%", aspectRatio:"1", borderRadius:8,
+                          border:`1px solid ${ui.border}` }} />
+                        <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:9 }}>{k}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Dorado & Durazno — Escalas" number="04">
+                  <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+                    {[colors.gold, colors.peach].map((scale, i) => (
+                      <div key={i} style={{ display:"grid", gridTemplateColumns:"repeat(11,1fr)", gap:6 }}>
+                        {Object.entries(scale).map(([k,v]) => (
+                          <div key={k} style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
+                            <div style={{ backgroundColor:v, width:"100%", aspectRatio:"1", borderRadius:8,
+                              border:`1px solid ${ui.border}` }} />
+                            <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:9 }}>{k}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Proporciones" number="05">
+                  <div style={{ padding:24, borderRadius:20, backgroundColor:ui.bgCard,
+                    border:`1px solid ${ui.border}`, marginBottom:16 }}>
+                    <p style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:12, marginBottom:14 }}>Composición visual de la marca</p>
+                    <div style={{ display:"flex", borderRadius:12, overflow:"hidden", height:40, marginBottom:16 }}>
+                      <div style={{ width:"45%", backgroundColor:ui.deep, display:"flex",
+                        alignItems:"center", justifyContent:"center" }}>
+                        <span style={{ fontFamily:fonts.ui, fontSize:11, fontWeight:700, color:"#FFF6ED" }}>Bosque 45%</span>
+                      </div>
+                      <div style={{ width:"25%", backgroundColor:colors.green[400], display:"flex",
+                        alignItems:"center", justifyContent:"center" }}>
+                        <span style={{ fontFamily:fonts.ui, fontSize:11, fontWeight:700, color:"#FFF6ED" }}>Verde 25%</span>
+                      </div>
+                      <div style={{ width:"20%", backgroundColor:ui.cta, display:"flex",
+                        alignItems:"center", justifyContent:"center" }}>
+                        <span style={{ fontFamily:fonts.ui, fontSize:11, fontWeight:700, color:"#FFF6ED" }}>Coral 20%</span>
+                      </div>
+                      <div style={{ width:"10%", backgroundColor:colors.gold[400] }} />
+                    </div>
+                  </div>
+                </Section>
+              </div>
+            )}
+
+            {/* ══ TYPOGRAPHY ══ */}
+            {tab === "typography" && (
+              <div>
+                <Section title="Sistema tipográfico" number="01">
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16, marginBottom:40 }}>
+                    {[
+                      { name:"Syne",         role:"Display / Headings",  sample:"Guayaba Go!",                   w:800, fam:fonts.display, sz:32, sub:"Carácter, fuerza, identidad",   col:ui.cta      },
+                      { name:"DM Sans",      role:"Body / UI",           sample:"Loncheras que nutren la semana.", w:400, fam:fonts.body,    sz:18, sub:"Legibilidad, claridad, confianza", col:colors.green[500] },
+                      { name:"Space Grotesk",role:"Labels / Data",       sample:"Kcal 320 · Proteína 12g",        w:500, fam:fonts.ui,      sz:14, sub:"Datos técnicos, etiquetas",    col:ui.textSec  },
+                    ].map(f => (
+                      <Card key={f.name}>
+                        <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:11,
+                          display:"block", marginBottom:8 }}>{f.role}</span>
+                        <p style={{ fontFamily:f.fam, fontWeight:f.w, fontSize:f.sz,
+                          color:ui.text, marginBottom:12, lineHeight:1.2 }}>{f.sample}</p>
+                        <p style={{ fontFamily:fonts.ui, fontSize:12, fontWeight:600, color:f.col }}>{f.name}</p>
+                        <p style={{ fontFamily:fonts.ui, fontSize:11, color:ui.textSec, marginTop:4 }}>{f.sub}</p>
+                      </Card>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Escala tipográfica" number="02">
+                  {[
+                    { label:"Display XL · 72px", sz:72, fam:fonts.display, w:800, s:"Guayaba Go!" },
+                    { label:"Display · 52px",   sz:52, fam:fonts.display, w:800, s:"Sano, rico y listo" },
+                    { label:"H1 · 40px",         sz:40, fam:fonts.display, w:800, s:"Tu lonchera semanal" },
+                    { label:"H2 · 32px",         sz:32, fam:fonts.display, w:700, s:"Menú de esta semana" },
+                    { label:"H3 · 24px",         sz:24, fam:fonts.display, w:700, s:"Lonchera Verde · 5 días" },
+                    { label:"Subtitle · 20px",   sz:20, fam:fonts.body,    w:600, s:"Kit semanal incluido" },
+                    { label:"Body · 16px",       sz:16, fam:fonts.body,    w:400, s:"Cada lonchera es preparada con ingredientes frescos y entregada en cadena de frío." },
+                    { label:"Label · 14px",      sz:14, fam:fonts.ui,      w:500, s:"Calorías · Proteína · Vitamina C · Fibra" },
+                    { label:"Caption · 12px",    sz:12, fam:fonts.ui,      w:400, s:"Entrega lunes–viernes · Cadena de frío 2–8°C garantizada" },
+                  ].map((t,i) => (
+                    <div key={i} style={{ display:"flex", alignItems:"baseline", gap:16,
+                      padding:"14px 0", borderBottom:`1px solid ${ui.border}` }}>
+                      <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:10,
+                        letterSpacing:"0.05em", minWidth:140, flexShrink:0 }}>{t.label}</span>
+                      <p style={{ fontFamily:t.fam, fontSize:t.sz, fontWeight:t.w,
+                        color:ui.text, lineHeight:1.1, margin:0 }}>{t.s}</p>
+                    </div>
+                  ))}
+                </Section>
+              </div>
+            )}
+
+            {/* ══ VOICE ══ */}
+            {tab === "voice" && (
+              <div>
+                <Section title="Principios de voz" number="01">
+                  {[
+                    { t:"Cercana",   si:'"¿Lista la lonchera? ¡Vamos!"',                      no:'"Estimada usuaria, su pedido fue procesado."'        },
+                    { t:"Alegre",    si:'"¡Tu Go! está en camino 🚀"',                         no:'"Su envío ha sido registrado correctamente."'         },
+                    { t:"Confiable", si:'"Cadena de frío todo el trayecto."',                  no:'"Creemos que los ingredientes son frescos."'          },
+                    { t:"Simple",    si:'"Rica en vitamina C y fibra"',                        no:'"Contiene polifenoles y antioxidantes fitoquímicos."' },
+                    { t:"Inclusiva", si:'"Para todas las familias"',                           no:'"Para familias conscientes de su alimentación."'     },
+                  ].map(v => (
+                    <div key={v.t} style={{ display:"grid", gridTemplateColumns:"140px 1fr 1fr",
+                      gap:12, padding:16, borderRadius:18, backgroundColor:ui.bgCard,
+                      border:`1px solid ${ui.border}`, marginBottom:10 }}>
+                      <div style={{ display:"flex", alignItems:"center" }}>
+                        <span style={{ fontFamily:fonts.display, fontWeight:800, fontSize:20, color:ui.text }}>{v.t}</span>
+                      </div>
+                      <div style={{ padding:12, borderRadius:12, backgroundColor:colors.green[50],
+                        border:`1px solid ${colors.green[200]}` }}>
+                        <p style={{ fontFamily:fonts.ui, color:colors.green[700], fontSize:11,
+                          fontWeight:600, marginBottom:6 }}>✅ Sí</p>
+                        <p style={{ fontFamily:fonts.body, color:ui.text, fontSize:14, fontStyle:"italic" }}>{v.si}</p>
+                      </div>
+                      <div style={{ padding:12, borderRadius:12, backgroundColor:colors.coral[50],
+                        border:`1px solid ${colors.coral[200]}` }}>
+                        <p style={{ fontFamily:fonts.ui, color:colors.coral[700], fontSize:11,
+                          fontWeight:600, marginBottom:6 }}>❌ No</p>
+                        <p style={{ fontFamily:fonts.body, color:ui.textSec, fontSize:14, fontStyle:"italic" }}>{v.no}</p>
+                      </div>
+                    </div>
+                  ))}
+                </Section>
+
+                <Section title="Glosario" number="02">
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                    {[
+                      ["Lonchera semanal",      "Tu Go! de la semana"],
+                      ["Paquete de 5 días",     "Kit semanal"],
+                      ["Menú psiconutritivo",   "Menú Guayaba Go!"],
+                      ["Cliente padre/madre",   "Familia Go!"],
+                      ["Entrega completada",    "¡Tu Go! llegó! 🎉"],
+                      ["Producto agotado",      "Este Go! ya voló 🍃"],
+                    ].map(([a,b]) => (
+                      <div key={a} style={{ display:"flex", alignItems:"center", gap:10,
+                        padding:12, borderRadius:12, backgroundColor:ui.bgCard,
+                        border:`1px solid ${ui.border}` }}>
+                        <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:13,
+                          textDecoration:"line-through" }}>{a}</span>
+                        <span style={{ color:ui.textSec }}>→</span>
+                        <span style={{ fontFamily:fonts.ui, color:ui.cta, fontSize:13, fontWeight:600 }}>{b}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+              </div>
+            )}
+
+            {/* ══ APPLICATIONS ══ */}
+            {tab === "applications" && (
+              <div>
+                <Section title="Botones" number="01">
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:20 }}>
+                    {[
+                      { bg:"#FFF6ED", dark:false, label:"Sobre crema" },
+                      { bg:ui.deep,   dark:true,  label:"Sobre bosque oscuro" },
+                    ].map(({ bg, dark, label }) => (
+                      <div key={label}>
+                        <p style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:11, marginBottom:10 }}>{label}</p>
+                        <div style={{ backgroundColor:bg, borderRadius:20, padding:"28px 24px",
+                          display:"flex", flexWrap:"wrap", gap:10,
+                          border:`1px solid ${dark ? "transparent" : ui.border}` }}>
+                          {[
+                            { l:"¡Go! Pedir",   bg:ui.cta,            c:"#FFF6ED" },
+                            { l:"Ver menú",      bg:colors.green[400], c:"#FFF6ED" },
+                            { l:"Saber más",     bg:"transparent",     c:dark?colors.gold[400]:ui.cta, brd:dark?`2px solid ${colors.gold[400]}`:`2px solid ${ui.cta}` },
+                            { l:"Cancelar",      bg:dark?colors.neutral[800]:"#EDE0CE", c:dark?"#B09880":ui.textSec },
+                          ].map(btn => (
+                            <button key={btn.l} style={{ backgroundColor:btn.bg, color:btn.c,
+                              border:btn.brd||"none", padding:"10px 20px", borderRadius:10,
+                              fontFamily:fonts.body, fontWeight:600, fontSize:14, cursor:"pointer" }}>
+                              {btn.l}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+
+                <Section title="Cards de producto" number="02">
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:16 }}>
+                    {[
+                      { t:"Lonchera Bosque", bg:ui.deep, items:["Wrap de pollo integral","Guayaba natural","Mix de semillas","Agua fresca"], cal:420, price:"$65", tc:"#FFF6ED" },
+                      { t:"Lonchera Coral",  bg:ui.cta,  items:["Tostadas de frijol","Fruta de temporada","Yogurt natural","Galletas avena"], cal:380, price:"$65", tc:"#FFF6ED" },
+                      { t:"Lonchera Dorada", bg:colors.gold[400], items:["Sandwich de pavo","Guayaba fresca","Zanahoria baby","Jugo natural"], cal:440, price:"$70", tc:ui.deep },
+                    ].map(card => (
+                      <div key={card.t} style={{ borderRadius:20, overflow:"hidden", border:`1px solid ${ui.border}` }}>
+                        <div style={{ padding:18, backgroundColor:card.bg }}>
+                          <span style={{ fontFamily:fonts.ui, color:card.tc+"99", fontSize:11 }}>Kit semanal</span>
+                          <h3 style={{ fontFamily:fonts.display, fontWeight:800, fontSize:22, color:card.tc, marginTop:4 }}>{card.t}</h3>
+                        </div>
+                        <div style={{ padding:16, backgroundColor:ui.bgCard }}>
+                          <ul style={{ listStyle:"none", marginBottom:14 }}>
+                            {card.items.map(i => (
+                              <li key={i} style={{ fontFamily:fonts.body, color:ui.text, fontSize:14,
+                                padding:"3px 0", display:"flex", gap:8 }}>
+                                <span style={{ color:colors.green[400] }}>·</span>{i}
+                              </li>
+                            ))}
+                          </ul>
+                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+                            <span style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:12 }}>{card.cal} kcal</span>
+                            <span style={{ fontFamily:fonts.display, fontWeight:800, fontSize:24, color:ui.cta }}>{card.price}</span>
+                          </div>
+                          <button style={{ width:"100%", padding:10, borderRadius:10, backgroundColor:ui.cta,
+                            color:"#FFF6ED", border:"none", fontFamily:fonts.body,
+                            fontWeight:600, fontSize:14, cursor:"pointer" }}>¡Lo quiero!</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Section>
+              </div>
+            )}
+
+          </main>
+
+          <footer style={{ borderTop:`1px solid ${ui.border}`, marginTop:64, padding:"28px 24px" }}>
+            <div style={{ maxWidth:1152, margin:"0 auto", display:"flex",
+              alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
+              <Wordmark size={16} />
+              <p style={{ fontFamily:fonts.ui, color:ui.textSec, fontSize:11,
+                letterSpacing:"0.06em" }}>BRAND GUIDELINES v2.0 · MARZO 2026 · GUAYABA GO!</p>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<GuayabaGoBrandV2 />);
+  </script>
+</body>
+</html>

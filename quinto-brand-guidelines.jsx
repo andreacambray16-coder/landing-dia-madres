@@ -1,0 +1,854 @@
+import { useState } from "react";
+
+// ─── Paleta de colores ────────────────────────────────────────────────────────
+const colors = {
+  green: {
+    50:  "#F0FDF4", 100: "#DCFCE7", 200: "#BBF7D0", 300: "#86EFAC",
+    400: "#4ADE80", 500: "#22C55E", 600: "#16A34A", 700: "#15803D",
+    800: "#166534", 900: "#14532D", 950: "#052E16",
+  },
+  amber: {
+    50:  "#FFFBEB", 100: "#FEF3C7", 200: "#FDE68A", 300: "#FCD34D",
+    400: "#FBBF24", 500: "#F59E0B", 600: "#D97706", 700: "#B45309",
+    800: "#92400E", 900: "#78350F", 950: "#451A03",
+  },
+  neutral: {
+    50:  "#FAFAF8", 100: "#F5F4F0", 200: "#E8E6E0", 300: "#D4D1C8",
+    400: "#B8B4A8", 500: "#8C8880", 600: "#6B6760", 700: "#514E48",
+    800: "#3A3834", 900: "#252420", 950: "#141310",
+  },
+  semantic: {
+    success: "#16A34A",
+    warning: "#D97706",
+    error:   "#DC2626",
+    info:    "#2563EB",
+  },
+};
+
+const ui = {
+  bg:        colors.neutral[50],
+  surface:   colors.neutral[100],
+  border:    colors.neutral[200],
+  text:      colors.neutral[900],
+  muted:     colors.neutral[600],
+  body:      colors.neutral[700],
+  primary:   colors.green[700],
+  accent:    colors.amber[500],
+};
+
+const f = {
+  display: "'Plus Jakarta Sans', sans-serif",
+  body:    "'Inter', sans-serif",
+  mono:    "'JetBrains Mono', monospace",
+};
+
+// ─── Sub-componentes ──────────────────────────────────────────────────────────
+const ColorSwatch = ({ name, hex, label, tall, star }) => (
+  <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+    <div style={{
+      backgroundColor: hex,
+      height: tall ? 88 : 56,
+      borderRadius: 10,
+      border: `1px solid ${colors.neutral[200]}`,
+      position: "relative",
+    }}>
+      {star && (
+        <div style={{
+          position: "absolute", top: 6, right: 6,
+          width: 14, height: 14, borderRadius: "50%",
+          backgroundColor: "rgba(255,255,255,0.6)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 9,
+        }}>★</div>
+      )}
+    </div>
+    <span style={{ fontFamily: f.mono, fontSize: 10, color: ui.muted }}>{hex}</span>
+    <span style={{ fontFamily: f.body, fontSize: 12, fontWeight: 600, color: ui.text }}>{name}</span>
+    {label && <span style={{ fontFamily: f.body, fontSize: 11, color: ui.muted, lineHeight: 1.3 }}>{label}</span>}
+  </div>
+);
+
+const Section = ({ number, title, children }) => (
+  <div style={{ marginBottom: 56 }}>
+    <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 24 }}>
+      <span style={{ fontFamily: f.mono, fontSize: 11, color: ui.primary, letterSpacing: "0.12em" }}>{number}</span>
+      <h2 style={{ fontFamily: f.display, fontSize: 22, fontWeight: 700, color: ui.text, margin: 0, lineHeight: 1 }}>{title}</h2>
+    </div>
+    {children}
+  </div>
+);
+
+const Pill = ({ children, bg, text }) => (
+  <span style={{
+    display: "inline-block", borderRadius: 999, padding: "4px 12px",
+    backgroundColor: bg, color: text, fontFamily: f.body, fontSize: 12, fontWeight: 600,
+  }}>{children}</span>
+);
+
+const Card = ({ children, style }) => (
+  <div style={{
+    backgroundColor: ui.surface,
+    border: `1px solid ${ui.border}`,
+    borderRadius: 16, padding: 20, ...style,
+  }}>{children}</div>
+);
+
+// ─── Logo / Wordmark ──────────────────────────────────────────────────────────
+const QIcon = ({ size = 40, color = colors.green[700] }) => (
+  <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="22" cy="22" r="16" fill={color} />
+    <text
+      x="22" y="29"
+      textAnchor="middle"
+      fontFamily="'Plus Jakarta Sans', sans-serif"
+      fontWeight="700"
+      fontSize="22"
+      fill="#ffffff"
+    >Q</text>
+    {/* Cola decorativa */}
+    <path d="M32 32 L42 42" stroke={color} strokeWidth="4" strokeLinecap="round"/>
+  </svg>
+);
+
+const Wordmark = ({ variant = "light" }) => {
+  const onDark = variant === "dark";
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <QIcon size={40} color={onDark ? colors.green[400] : colors.green[700]} />
+      <span style={{
+        fontFamily: f.display,
+        fontWeight: 700,
+        fontSize: 28,
+        color: onDark ? "#ffffff" : colors.neutral[900],
+        letterSpacing: "-0.02em",
+        lineHeight: 1,
+      }}>
+        <span style={{ color: onDark ? colors.green[400] : colors.green[700] }}>Q</span>uinto
+      </span>
+    </div>
+  );
+};
+
+// ─── Componente principal ─────────────────────────────────────────────────────
+export default function QuintoBrandBook() {
+  const [activeTab, setActiveTab] = useState("esencia");
+
+  const tabs = [
+    { id: "esencia",     label: "Esencia"     },
+    { id: "logo",        label: "Logo"         },
+    { id: "colores",     label: "Colores"      },
+    { id: "tipografia",  label: "Tipografía"   },
+    { id: "componentes", label: "Componentes"  },
+    { id: "voz",         label: "Voz & Tono"   },
+  ];
+
+  return (
+    <div style={{ backgroundColor: ui.bg, minHeight: "100vh", fontFamily: f.body, color: ui.text }}>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+      />
+
+      {/* ── Header ── */}
+      <header style={{
+        position: "sticky", top: 0, zIndex: 50,
+        backgroundColor: ui.bg + "F2",
+        backdropFilter: "blur(20px)",
+        borderBottom: `1px solid ${ui.border}`,
+      }}>
+        <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 24px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <QIcon size={32} color={colors.green[700]} />
+              <div>
+                <div style={{ fontFamily: f.display, fontWeight: 700, fontSize: 16, color: ui.text, letterSpacing: "-0.02em" }}>
+                  Quinto
+                </div>
+                <div style={{ fontFamily: f.mono, fontSize: 10, color: ui.muted }}>Brand Guidelines v1.0</div>
+              </div>
+            </div>
+            <Pill bg={colors.green[100]} text={colors.green[800]}>Febrero 2026</Pill>
+          </div>
+          <div style={{ display: "flex", gap: 2, overflowX: "auto", paddingBottom: 1 }}>
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  padding: "8px 16px", fontSize: 12, letterSpacing: "0.04em",
+                  fontFamily: f.body, fontWeight: activeTab === tab.id ? 700 : 400,
+                  color: activeTab === tab.id ? ui.text : ui.muted,
+                  background: "transparent", border: "none", cursor: "pointer",
+                  position: "relative", whiteSpace: "nowrap", transition: "color 0.15s",
+                }}
+              >
+                {tab.label}
+                {activeTab === tab.id && (
+                  <div style={{
+                    position: "absolute", bottom: 0, left: 12, right: 12, height: 2,
+                    borderRadius: 2, backgroundColor: colors.green[700],
+                  }} />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* ── Contenido ── */}
+      <main style={{ maxWidth: 960, margin: "0 auto", padding: "48px 24px" }}>
+
+        {/* ══════════ ESENCIA ══════════ */}
+        {activeTab === "esencia" && (
+          <div>
+            {/* Hero */}
+            <div style={{
+              backgroundColor: colors.green[950], borderRadius: 24, padding: "56px 48px",
+              marginBottom: 56, position: "relative", overflow: "hidden",
+            }}>
+              <div style={{
+                position: "absolute", right: -20, top: "50%", transform: "translateY(-50%)",
+                opacity: 0.05, fontFamily: f.display, fontWeight: 800,
+                fontSize: 240, color: colors.green[400], lineHeight: 1, userSelect: "none",
+              }}>Q</div>
+              <div style={{ fontFamily: f.mono, fontSize: 11, color: colors.green[400], letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 20 }}>
+                Finanzas personales · Economía mexicana · CDMX
+              </div>
+              <h1 style={{ fontFamily: f.display, fontWeight: 800, fontSize: 56, color: colors.green[400], lineHeight: 1.0, margin: "0 0 16px", letterSpacing: "-0.03em" }}>
+                Quinto
+              </h1>
+              <p style={{ fontFamily: f.display, fontWeight: 600, fontSize: 22, color: "#ffffff", margin: "0 0 20px" }}>
+                "Tu quinto, tus reglas"
+              </p>
+              <p style={{ fontFamily: f.body, fontSize: 16, color: colors.neutral[300], maxWidth: 520, lineHeight: 1.75, margin: 0 }}>
+                El primer planeador financiero diseñado desde y para la economía mexicana. Entiende el quincenazo, los gastos inesperados, las deudas en abonos y la realidad de quien vive al día.
+              </p>
+            </div>
+
+            <Section number="01" title="Posicionamiento">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, marginBottom: 16 }}>
+                {[
+                  { label: "Audiencia", value: "Mexicanos y latinos de 18 a 50+ años que quieren tomar el control de su dinero" },
+                  { label: "Categoría", value: "Planeador financiero personal con contexto de economía mexicana" },
+                  { label: "Diferenciador clave", value: "Entiende quincenas, tandas, abonos, IMSS y SAR — no es una app gringa traducida" },
+                  { label: "Promesa de marca", value: "Como tener un amigo que sabe de finanzas y te habla sin rodeos" },
+                ].map(({ label, value }) => (
+                  <Card key={label}>
+                    <div style={{ fontFamily: f.body, fontSize: 11, fontWeight: 600, color: ui.primary, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>{label}</div>
+                    <div style={{ fontFamily: f.body, fontSize: 14, color: ui.text, lineHeight: 1.55 }}>{value}</div>
+                  </Card>
+                ))}
+              </div>
+              <div style={{ backgroundColor: colors.green[50], border: `1px solid ${colors.green[200]}`, borderRadius: 12, padding: "14px 20px" }}>
+                <span style={{ fontFamily: f.body, fontSize: 11, fontWeight: 600, color: colors.green[700], textTransform: "uppercase", letterSpacing: "0.08em" }}>Anti-posicionamiento</span>
+                <p style={{ fontFamily: f.body, fontSize: 14, color: ui.text, margin: "6px 0 0", lineHeight: 1.6 }}>
+                  Quinto <strong>NO es</strong>: una app fría y corporativa para el mercado estadounidense · un servicio exclusivo para gente con dinero de sobra · una herramienta complicada que requiere ser contador · otra app de presupuestos genérica sin contexto local
+                </p>
+              </div>
+            </Section>
+
+            <Section number="02" title="Personalidad de Marca">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginBottom: 24 }}>
+                {[
+                  { icon: "🤝", word: "Cercano",      desc: "Habla de tú, como un amigo de confianza" },
+                  { icon: "🔍", word: "Honesto",       desc: "Sin letra chica, sin promesas vacías" },
+                  { icon: "💪", word: "Empoderador",   desc: "Te da herramientas, no te juzga" },
+                  { icon: "🇲🇽", word: "Mexicano",     desc: "Entiende quincenas, tandas, IMSS, SAR" },
+                  { icon: "🌱", word: "Esperanzador",  desc: "Crecer sí es posible sin importar de dónde partes" },
+                ].map(({ icon, word, desc }) => (
+                  <Card key={word} style={{ textAlign: "center", padding: 16 }}>
+                    <div style={{ fontSize: 28, marginBottom: 8 }}>{icon}</div>
+                    <div style={{ fontFamily: f.display, fontWeight: 700, fontSize: 13, color: ui.text, marginBottom: 4 }}>{word}</div>
+                    <div style={{ fontFamily: f.body, fontSize: 11, color: ui.muted, lineHeight: 1.4 }}>{desc}</div>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+
+            <Section number="03" title="Diferenciadores">
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: f.body, fontSize: 14 }}>
+                  <thead>
+                    <tr>
+                      {["Aspecto", "Apps extranjeras", "Quinto"].map((h, i) => (
+                        <th key={h} style={{
+                          padding: "10px 16px", textAlign: "left",
+                          backgroundColor: i === 2 ? colors.green[700] : colors.neutral[100],
+                          color: i === 2 ? "#ffffff" : ui.muted,
+                          fontWeight: 600, fontSize: 12,
+                          borderRadius: i === 0 ? "8px 0 0 8px" : i === 2 ? "0 8px 8px 0" : 0,
+                          letterSpacing: "0.04em",
+                        }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      ["Contexto económico", "USD, economía americana", "MXN, quincenas, economía mexicana"],
+                      ["Estrategias de deuda", "Genéricas", "Adaptadas (abonos, tarjetas departamentales)"],
+                      ["Tono", "Formal o neutro", "Cercano, de tú, sin tecnicismos"],
+                      ["Metas", "Abstractas", "Contextualizadas (guardadito de emergencia, salida de deuda)"],
+                    ].map(([aspecto, ext, quinto], i) => (
+                      <tr key={aspecto} style={{ backgroundColor: i % 2 === 0 ? "transparent" : colors.neutral[50] }}>
+                        <td style={{ padding: "12px 16px", fontWeight: 600, color: ui.text, borderBottom: `1px solid ${ui.border}` }}>{aspecto}</td>
+                        <td style={{ padding: "12px 16px", color: ui.muted, borderBottom: `1px solid ${ui.border}` }}>{ext}</td>
+                        <td style={{ padding: "12px 16px", color: colors.green[700], fontWeight: 600, borderBottom: `1px solid ${ui.border}` }}>{quinto}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Section>
+          </div>
+        )}
+
+        {/* ══════════ LOGO ══════════ */}
+        {activeTab === "logo" && (
+          <div>
+            <Section number="01" title="Wordmark">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16, marginBottom: 32 }}>
+                {/* Principal */}
+                <Card style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ fontFamily: f.body, fontSize: 11, fontWeight: 600, color: ui.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Principal</div>
+                  <div style={{ backgroundColor: colors.neutral[50], borderRadius: 12, padding: "32px 24px", display: "flex", justifyContent: "center", border: `1px solid ${ui.border}` }}>
+                    <Wordmark variant="light" />
+                  </div>
+                  <div style={{ fontFamily: f.body, fontSize: 12, color: ui.muted }}>Sobre fondo blanco / crema — uso general</div>
+                </Card>
+                {/* Invertida */}
+                <Card style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ fontFamily: f.body, fontSize: 11, fontWeight: 600, color: ui.muted, textTransform: "uppercase", letterSpacing: "0.08em" }}>Invertida</div>
+                  <div style={{ backgroundColor: colors.green[700], borderRadius: 12, padding: "32px 24px", display: "flex", justifyContent: "center" }}>
+                    <Wordmark variant="dark" />
+                  </div>
+                  <div style={{ fontFamily: f.body, fontSize: 12, color: ui.muted }}>Sobre verde Quinto 700 — headers, splash</div>
+                </Card>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 32 }}>
+                {/* Solo ícono */}
+                <Card style={{ textAlign: "center" }}>
+                  <div style={{ fontFamily: f.body, fontSize: 11, fontWeight: 600, color: ui.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 16 }}>Solo ícono</div>
+                  <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                    <QIcon size={56} color={colors.green[700]} />
+                  </div>
+                  <div style={{ fontFamily: f.body, fontSize: 12, color: ui.muted }}>Favicon, app icon, avatar</div>
+                </Card>
+                {/* Modo oscuro */}
+                <Card style={{ textAlign: "center", backgroundColor: colors.green[950], borderColor: colors.green[800] }}>
+                  <div style={{ fontFamily: f.body, fontSize: 11, fontWeight: 600, color: colors.green[400], textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 16 }}>Modo oscuro</div>
+                  <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                    <QIcon size={56} color={colors.green[400]} />
+                  </div>
+                  <div style={{ fontFamily: f.body, fontSize: 12, color: colors.green[500] }}>App en dark mode</div>
+                </Card>
+                {/* Acento */}
+                <Card style={{ textAlign: "center" }}>
+                  <div style={{ fontFamily: f.body, fontSize: 11, fontWeight: 600, color: ui.muted, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 16 }}>Con acento</div>
+                  <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+                    <QIcon size={56} color={colors.amber[500]} />
+                  </div>
+                  <div style={{ fontFamily: f.body, fontSize: 12, color: ui.muted }}>Momentos especiales, metas</div>
+                </Card>
+              </div>
+            </Section>
+
+            <Section number="02" title="Especificaciones">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12, marginBottom: 24 }}>
+                {[
+                  { label: "Fuente", value: "Plus Jakarta Sans 700 (Bold)" },
+                  { label: "Tamaño mínimo digital", value: "80px de ancho" },
+                  { label: "Tamaño mínimo impresión", value: "20mm de ancho" },
+                  { label: "Espacio libre", value: "Equivalente a la altura de la Q en todos los lados" },
+                ].map(({ label, value }) => (
+                  <Card key={label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontFamily: f.body, fontSize: 13, color: ui.muted }}>{label}</span>
+                    <span style={{ fontFamily: f.mono, fontSize: 13, color: ui.text, fontWeight: 500 }}>{value}</span>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+
+            <Section number="03" title="Reglas de Uso">
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                <div style={{ backgroundColor: colors.green[50], border: `1px solid ${colors.green[200]}`, borderRadius: 16, padding: 20 }}>
+                  <div style={{ fontFamily: f.display, fontWeight: 700, fontSize: 14, color: colors.green[700], marginBottom: 16 }}>✅ Hacer</div>
+                  {[
+                    "Respetar el espacio mínimo alrededor del logo",
+                    "Usar siempre sobre fondos con contraste suficiente",
+                    "Usar el archivo vectorial original",
+                  ].map(r => (
+                    <div key={r} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
+                      <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: colors.green[500], marginTop: 5, flexShrink: 0 }} />
+                      <span style={{ fontFamily: f.body, fontSize: 13, color: ui.text, lineHeight: 1.5 }}>{r}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ backgroundColor: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 16, padding: 20 }}>
+                  <div style={{ fontFamily: f.display, fontWeight: 700, fontSize: 14, color: "#DC2626", marginBottom: 16 }}>❌ No hacer</div>
+                  {[
+                    "No rotar, distorsionar ni escalar desproporcionadamente",
+                    "No cambiar los colores del logo",
+                    "No agregar sombras, brillos ni efectos",
+                    "No colocar sobre fondos fotográficos sin overlay",
+                    "No recrear el logo con otra fuente",
+                  ].map(r => (
+                    <div key={r} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
+                      <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "#DC2626", marginTop: 5, flexShrink: 0 }} />
+                      <span style={{ fontFamily: f.body, fontSize: 13, color: ui.text, lineHeight: 1.5 }}>{r}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Section>
+          </div>
+        )}
+
+        {/* ══════════ COLORES ══════════ */}
+        {activeTab === "colores" && (
+          <div>
+            {/* Proporción */}
+            <div style={{ marginBottom: 40 }}>
+              <div style={{ height: 12, borderRadius: 999, overflow: "hidden", display: "flex", marginBottom: 8 }}>
+                <div style={{ flex: 70, backgroundColor: colors.neutral[400] }} />
+                <div style={{ flex: 20, backgroundColor: colors.green[700] }} />
+                <div style={{ flex: 10, backgroundColor: colors.amber[500] }} />
+              </div>
+              <div style={{ display: "flex", gap: 24 }}>
+                {[
+                  { color: colors.neutral[400], pct: "70%", label: "Neutros cálidos — fondos, textos, estructura" },
+                  { color: colors.green[700],   pct: "20%", label: "Verde Quinto — acciones, énfasis, marca" },
+                  { color: colors.amber[500],   pct: "10%", label: "Ámbar Dorado — highlights, metas, momentos especiales" },
+                ].map(({ color, pct, label }) => (
+                  <div key={pct} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ width: 12, height: 12, borderRadius: 3, backgroundColor: color }} />
+                    <span style={{ fontFamily: f.mono, fontSize: 11, color: ui.primary, fontWeight: 600 }}>{pct}</span>
+                    <span style={{ fontFamily: f.body, fontSize: 11, color: ui.muted }}>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <Section number="01" title="Verde Quinto — Primario">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(11, 1fr)", gap: 8, marginBottom: 16 }}>
+                {[
+                  { n: "50",  hex: "#F0FDF4" }, { n: "100", hex: "#DCFCE7" },
+                  { n: "200", hex: "#BBF7D0" }, { n: "300", hex: "#86EFAC" },
+                  { n: "400", hex: "#4ADE80" }, { n: "500", hex: "#22C55E" },
+                  { n: "600", hex: "#16A34A" }, { n: "700", hex: "#15803D", star: true },
+                  { n: "800", hex: "#166534" }, { n: "900", hex: "#14532D" },
+                  { n: "950", hex: "#052E16" },
+                ].map(({ n, hex, star }) => (
+                  <ColorSwatch key={n} name={n} hex={hex} star={star} />
+                ))}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
+                {[
+                  { hex: "#15803D", label: "★ Color principal — botones, links, énfasis", n: "700" },
+                  { hex: "#16A34A", label: "Botón primario hover", n: "600" },
+                  { hex: "#052E16", label: "Fondos oscuros de la app", n: "950" },
+                ].map(({ hex, label, n }) => (
+                  <Card key={n} style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                    <div style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: hex, flexShrink: 0 }} />
+                    <div>
+                      <div style={{ fontFamily: f.mono, fontSize: 12, fontWeight: 500, color: ui.text }}>{hex}</div>
+                      <div style={{ fontFamily: f.body, fontSize: 11, color: ui.muted, lineHeight: 1.4 }}>{label}</div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+
+            <Section number="02" title="Ámbar Dorado — Acento">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(11, 1fr)", gap: 8, marginBottom: 16 }}>
+                {[
+                  { n: "50",  hex: "#FFFBEB" }, { n: "100", hex: "#FEF3C7" },
+                  { n: "200", hex: "#FDE68A" }, { n: "300", hex: "#FCD34D" },
+                  { n: "400", hex: "#FBBF24" }, { n: "500", hex: "#F59E0B", star: true },
+                  { n: "600", hex: "#D97706" }, { n: "700", hex: "#B45309" },
+                  { n: "800", hex: "#92400E" }, { n: "900", hex: "#78350F" },
+                  { n: "950", hex: "#451A03" },
+                ].map(({ n, hex, star }) => (
+                  <ColorSwatch key={n} name={n} hex={hex} star={star} />
+                ))}
+              </div>
+              <Card style={{ backgroundColor: colors.amber[50], borderColor: colors.amber[200] }}>
+                <span style={{ fontFamily: f.body, fontSize: 12, fontWeight: 600, color: colors.amber[700] }}>Nota de uso: </span>
+                <span style={{ fontFamily: f.body, fontSize: 12, color: ui.text }}>El ámbar dorado evoca monedas, calor mexicano y abundancia. Úsalo solo para metas, badges y momentos especiales. Nunca como color de botones primarios de acción.</span>
+              </Card>
+            </Section>
+
+            <Section number="03" title="Neutros Cálidos">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(11, 1fr)", gap: 8, marginBottom: 16 }}>
+                {[
+                  { n: "50",  hex: "#FAFAF8", star: true }, { n: "100", hex: "#F5F4F0" },
+                  { n: "200", hex: "#E8E6E0" },              { n: "300", hex: "#D4D1C8" },
+                  { n: "400", hex: "#B8B4A8" },              { n: "500", hex: "#8C8880" },
+                  { n: "600", hex: "#6B6760" },              { n: "700", hex: "#514E48", star: true },
+                  { n: "800", hex: "#3A3834" },              { n: "900", hex: "#252420", star: true },
+                  { n: "950", hex: "#141310" },
+                ].map(({ n, hex, star }) => (
+                  <ColorSwatch key={n} name={n} hex={hex} star={star} />
+                ))}
+              </div>
+            </Section>
+
+            <Section number="04" title="Semánticos">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+                {[
+                  { token: "success", hex: "#16A34A", label: "Pagos, metas cumplidas, saldo positivo" },
+                  { token: "warning", hex: "#D97706", label: "Gastos altos, fechas próximas" },
+                  { token: "error",   hex: "#DC2626", label: "Deuda vencida, saldo insuficiente" },
+                  { token: "info",    hex: "#2563EB", label: "Tips, onboarding, notificaciones neutras" },
+                ].map(({ token, hex, label }) => (
+                  <Card key={token}>
+                    <div style={{ width: "100%", height: 48, borderRadius: 8, backgroundColor: hex, marginBottom: 12 }} />
+                    <div style={{ fontFamily: f.mono, fontSize: 12, fontWeight: 500, color: ui.text, marginBottom: 4 }}>{hex}</div>
+                    <div style={{ fontFamily: f.mono, fontSize: 11, color: ui.primary, marginBottom: 6 }}>{token}</div>
+                    <div style={{ fontFamily: f.body, fontSize: 11, color: ui.muted, lineHeight: 1.4 }}>{label}</div>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+
+            <Section number="05" title="Mapeo Semántico">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+                {[
+                  { elemento: "Fondo de app",        token: "bg-base",           hex: "#FAFAF8" },
+                  { elemento: "Texto principal",      token: "text-primary",      hex: "#252420" },
+                  { elemento: "Texto secundario",     token: "text-secondary",    hex: "#6B6760" },
+                  { elemento: "Botón primario",       token: "btn-primary",       hex: "#15803D" },
+                  { elemento: "Botón hover",          token: "btn-primary-hover", hex: "#16A34A" },
+                  { elemento: "Acento / Metas",       token: "accent",            hex: "#F59E0B" },
+                  { elemento: "Borde",                token: "border",            hex: "#E8E6E0" },
+                  { elemento: "Tarjeta",              token: "card-bg",           hex: "#F5F4F0" },
+                ].map(({ elemento, token, hex }) => (
+                  <Card key={token} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px" }}>
+                    <div style={{ width: 32, height: 32, borderRadius: 6, backgroundColor: hex, border: `1px solid ${ui.border}`, flexShrink: 0 }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontFamily: f.body, fontSize: 12, fontWeight: 600, color: ui.text }}>{elemento}</div>
+                      <div style={{ fontFamily: f.mono, fontSize: 10, color: ui.primary }}>{token}</div>
+                    </div>
+                    <div style={{ fontFamily: f.mono, fontSize: 11, color: ui.muted }}>{hex}</div>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+          </div>
+        )}
+
+        {/* ══════════ TIPOGRAFÍA ══════════ */}
+        {activeTab === "tipografia" && (
+          <div>
+            <Section number="01" title="Sistema Tipográfico">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 40 }}>
+                {[
+                  { rol: "Display / Headings", fuente: "Plus Jakarta Sans", uso: "Títulos, onboarding, grandes cifras", sample: "Aa", style: { fontFamily: f.display, fontWeight: 800 } },
+                  { rol: "Body / UI",          fuente: "Inter",              uso: "Texto corrido, etiquetas, forms",    sample: "Aa", style: { fontFamily: f.body, fontWeight: 400 } },
+                  { rol: "Monoespaciada",      fuente: "JetBrains Mono",     uso: "Cifras, cantidades, códigos",        sample: "0₱", style: { fontFamily: f.mono, fontWeight: 500 } },
+                ].map(({ rol, fuente, uso, sample, style }) => (
+                  <Card key={rol}>
+                    <div style={{ ...style, fontSize: 56, color: ui.primary, lineHeight: 1, marginBottom: 16 }}>{sample}</div>
+                    <div style={{ fontFamily: f.display, fontWeight: 700, fontSize: 14, color: ui.text, marginBottom: 4 }}>{fuente}</div>
+                    <div style={{ fontFamily: f.body, fontSize: 11, color: ui.primary, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>{rol}</div>
+                    <div style={{ fontFamily: f.body, fontSize: 12, color: ui.muted, lineHeight: 1.5 }}>{uso}</div>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+
+            <Section number="02" title="Escala Tipográfica">
+              <Card style={{ padding: 0, overflow: "hidden" }}>
+                {[
+                  { nombre: "Display XL",  px: "48px", fuente: "Plus Jakarta Sans", peso: 800, muestra: "Controla tu quincena" },
+                  { nombre: "Display L",   px: "36px", fuente: "Plus Jakarta Sans", peso: 700, muestra: "Bienvenido a Quinto" },
+                  { nombre: "Heading 1",   px: "30px", fuente: "Plus Jakarta Sans", peso: 700, muestra: "Tu plan de quincena" },
+                  { nombre: "Heading 2",   px: "24px", fuente: "Plus Jakarta Sans", peso: 600, muestra: "Lo que entra este mes" },
+                  { nombre: "Heading 3",   px: "20px", fuente: "Plus Jakarta Sans", peso: 600, muestra: "Guardadito de emergencia" },
+                  { nombre: "Body L ★",    px: "16px", fuente: "Inter",              peso: 400, muestra: "Texto principal de la app" },
+                  { nombre: "Body M ★",    px: "14px", fuente: "Inter",              peso: 400, muestra: "Etiquetas y texto secundario" },
+                  { nombre: "Body S",      px: "12px", fuente: "Inter",              peso: 400, muestra: "Captions y ayuda" },
+                  { nombre: "Mono XL",     px: "20px", fuente: "JetBrains Mono",    peso: 500, muestra: "$12,500" },
+                  { nombre: "Mono M",      px: "14px", fuente: "JetBrains Mono",    peso: 400, muestra: "$3,200.00" },
+                ].map(({ nombre, px, fuente, peso, muestra }, i) => (
+                  <div key={nombre} style={{
+                    display: "grid", gridTemplateColumns: "120px 80px 180px 1fr",
+                    padding: "14px 20px", alignItems: "center",
+                    backgroundColor: i % 2 === 0 ? "transparent" : colors.neutral[50],
+                    borderBottom: `1px solid ${ui.border}`,
+                    gap: 12,
+                  }}>
+                    <span style={{ fontFamily: f.mono, fontSize: 11, color: ui.muted }}>{nombre}</span>
+                    <span style={{ fontFamily: f.mono, fontSize: 11, color: ui.primary, fontWeight: 500 }}>{px} / {peso}</span>
+                    <span style={{ fontFamily: f.body, fontSize: 11, color: ui.muted }}>{fuente}</span>
+                    <span style={{
+                      fontFamily: fuente === "Plus Jakarta Sans" ? f.display : fuente === "Inter" ? f.body : f.mono,
+                      fontWeight: peso,
+                      fontSize: Math.min(parseInt(px), 28),
+                      color: ui.text,
+                      letterSpacing: fuente === "Plus Jakarta Sans" ? "-0.02em" : "normal",
+                    }}>{muestra}</span>
+                  </div>
+                ))}
+              </Card>
+            </Section>
+
+            <Section number="03" title="Reglas Tipográficas">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+                {[
+                  "Los saldos y cantidades siempre usan JetBrains Mono para mejor legibilidad",
+                  "El texto corporal usa Inter con line-height: 1.6",
+                  "Los headings usan letter-spacing: -0.02em para mayor impacto",
+                  "No usar más de 2 fuentes en la misma pantalla",
+                  "Tamaño mínimo de texto legible: 12px",
+                  "Contraste mínimo texto/fondo: 4.5:1 (WCAG AA)",
+                ].map(regla => (
+                  <div key={regla} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <div style={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: colors.green[500], marginTop: 5, flexShrink: 0 }} />
+                    <span style={{ fontFamily: f.body, fontSize: 13, color: ui.text, lineHeight: 1.5 }}>{regla}</span>
+                  </div>
+                ))}
+              </div>
+            </Section>
+          </div>
+        )}
+
+        {/* ══════════ COMPONENTES ══════════ */}
+        {activeTab === "componentes" && (
+          <div>
+            <Section number="01" title="Botones">
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24 }}>
+                {[
+                  { label: "Guardar",        bg: colors.green[700],  text: "#fff",            name: "Primary"   },
+                  { label: "Cancelar",       bg: colors.neutral[100], text: colors.green[700], name: "Secondary" },
+                  { label: "Ver más",        bg: "transparent",      text: colors.green[700], name: "Ghost", border: colors.green[700] },
+                  { label: "Eliminar",       bg: "#DC2626",          text: "#fff",            name: "Danger"    },
+                  { label: "Crear meta",     bg: colors.amber[500],  text: "#fff",            name: "Accent"    },
+                ].map(({ label, bg, text, name, border }) => (
+                  <div key={name} style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+                    <button style={{
+                      backgroundColor: bg,
+                      color: text,
+                      border: border ? `1px solid ${border}` : "none",
+                      borderRadius: 12,
+                      padding: "0 16px",
+                      height: 48,
+                      fontFamily: f.body,
+                      fontWeight: 500,
+                      fontSize: 14,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}>{label}</button>
+                    <span style={{ fontFamily: f.mono, fontSize: 10, color: ui.muted }}>{name}</span>
+                  </div>
+                ))}
+              </div>
+              <Card>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, fontSize: 12, fontFamily: f.body }}>
+                  {[
+                    { prop: "Altura",          val: "48px" },
+                    { prop: "Padding H",       val: "16px" },
+                    { prop: "Border radius",   val: "12px" },
+                    { prop: "Font",            val: "Inter 500, 14px" },
+                  ].map(({ prop, val }) => (
+                    <div key={prop}>
+                      <div style={{ color: ui.muted, marginBottom: 4 }}>{prop}</div>
+                      <div style={{ fontFamily: f.mono, fontWeight: 500, color: ui.text }}>{val}</div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </Section>
+
+            <Section number="02" title="Tarjetas">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16, marginBottom: 24 }}>
+                {/* Tarjeta de saldo */}
+                <div style={{
+                  backgroundColor: colors.green[700], borderRadius: 20, padding: 24, color: "#fff",
+                  boxShadow: "0 4px 20px rgba(21,128,61,0.3)",
+                }}>
+                  <div style={{ fontFamily: f.body, fontSize: 12, opacity: 0.7, marginBottom: 8 }}>Saldo disponible</div>
+                  <div style={{ fontFamily: f.mono, fontWeight: 500, fontSize: 32, letterSpacing: "-0.01em", marginBottom: 16 }}>$8,450</div>
+                  <div style={{ fontFamily: f.body, fontSize: 12, opacity: 0.7 }}>Quincena actual · 14 días restantes</div>
+                </div>
+                {/* Tarjeta de meta */}
+                <Card>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontFamily: f.body, fontSize: 11, color: ui.muted, marginBottom: 4 }}>Meta de vida</div>
+                      <div style={{ fontFamily: f.display, fontWeight: 700, fontSize: 16, color: ui.text }}>Viaje a Oaxaca</div>
+                    </div>
+                    <Pill bg={colors.amber[100]} text={colors.amber[700]}>62%</Pill>
+                  </div>
+                  <div style={{ backgroundColor: ui.border, borderRadius: 999, height: 6, marginBottom: 8 }}>
+                    <div style={{ backgroundColor: colors.amber[500], height: "100%", borderRadius: 999, width: "62%" }} />
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontFamily: f.mono, fontSize: 12 }}>
+                    <span style={{ color: ui.muted }}>$3,720 ahorrados</span>
+                    <span style={{ color: ui.text, fontWeight: 500 }}>Meta: $6,000</span>
+                  </div>
+                </Card>
+              </div>
+              <Card>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, fontSize: 12, fontFamily: f.body }}>
+                  {[
+                    { prop: "Fondo",         val: "#F5F4F0" },
+                    { prop: "Border",        val: "1px solid #E8E6E0" },
+                    { prop: "Border radius", val: "16px" },
+                    { prop: "Padding",       val: "20px" },
+                  ].map(({ prop, val }) => (
+                    <div key={prop}>
+                      <div style={{ color: ui.muted, marginBottom: 4 }}>{prop}</div>
+                      <div style={{ fontFamily: f.mono, fontWeight: 500, color: ui.text }}>{val}</div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </Section>
+
+            <Section number="03" title="Sistema de Espaciado">
+              <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 24, alignItems: "flex-end" }}>
+                {[
+                  { token: "xs",  val: 4  },
+                  { token: "sm",  val: 8  },
+                  { token: "md",  val: 16 },
+                  { token: "lg",  val: 24 },
+                  { token: "xl",  val: 32 },
+                  { token: "2xl", val: 48 },
+                  { token: "3xl", val: 64 },
+                ].map(({ token, val }) => (
+                  <div key={token} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+                    <div style={{ width: val, height: val, backgroundColor: colors.green[200], borderRadius: 3, border: `1px solid ${colors.green[400]}` }} />
+                    <span style={{ fontFamily: f.mono, fontSize: 10, color: ui.primary }}>{token}</span>
+                    <span style={{ fontFamily: f.mono, fontSize: 10, color: ui.muted }}>{val}px</span>
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            <Section number="04" title="Border Radius">
+              <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                {[
+                  { token: "sm",   val: 8,    muestra: "Inputs" },
+                  { token: "md",   val: 12,   muestra: "Botones" },
+                  { token: "lg",   val: 16,   muestra: "Tarjetas" },
+                  { token: "xl",   val: 24,   muestra: "Modales" },
+                  { token: "full", val: 9999, muestra: "Pills" },
+                ].map(({ token, val, muestra }) => (
+                  <div key={token} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+                    <div style={{ width: 64, height: 40, backgroundColor: colors.green[100], border: `2px solid ${colors.green[400]}`, borderRadius: Math.min(val, 20) }} />
+                    <span style={{ fontFamily: f.mono, fontSize: 11, color: ui.primary }}>{token}</span>
+                    <span style={{ fontFamily: f.mono, fontSize: 10, color: ui.muted }}>{val === 9999 ? "9999px" : `${val}px`}</span>
+                    <span style={{ fontFamily: f.body, fontSize: 10, color: ui.muted }}>{muestra}</span>
+                  </div>
+                ))}
+              </div>
+            </Section>
+          </div>
+        )}
+
+        {/* ══════════ VOZ & TONO ══════════ */}
+        {activeTab === "voz" && (
+          <div>
+            <Section number="01" title="Principios de Escritura">
+              <div style={{ display: "flex", flexDirection: "column", gap: 2, marginBottom: 32 }}>
+                {[
+                  { rasgo: "Cercano",      ok: "¿Cómo va tu quincena?",             no: "Estimado usuario, le informamos..." },
+                  { rasgo: "Claro",        ok: "Te faltan $320 para tu meta",        no: "El monto restante para alcanzar su objetivo es de $320 MXN" },
+                  { rasgo: "Empoderador",  ok: "¡Pagaste el 30% de tu deuda!",       no: "Aún tienes deuda pendiente" },
+                  { rasgo: "Local",        ok: "Quincena, abonos, tandas",           no: "Payroll, installments, savings circles" },
+                  { rasgo: "Sin juzgar",   ok: "Vamos a organizarlo juntos",         no: "Tu gasto en esto fue excesivo" },
+                ].map(({ rasgo, ok, no }, i) => (
+                  <div key={rasgo} style={{
+                    display: "grid", gridTemplateColumns: "120px 1fr 1fr",
+                    padding: "14px 16px",
+                    backgroundColor: i % 2 === 0 ? "transparent" : colors.neutral[50],
+                    borderRadius: 10, gap: 16, alignItems: "center",
+                  }}>
+                    <div style={{ fontFamily: f.display, fontWeight: 700, fontSize: 12, color: ui.text }}>{rasgo}</div>
+                    <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                      <span style={{ color: colors.green[600], fontWeight: 700, fontSize: 14 }}>✓</span>
+                      <span style={{ fontFamily: f.body, fontSize: 13, color: ui.text, lineHeight: 1.4 }}>{ok}</span>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                      <span style={{ color: "#DC2626", fontWeight: 700, fontSize: 14 }}>✗</span>
+                      <span style={{ fontFamily: f.body, fontSize: 13, color: ui.muted, lineHeight: 1.4 }}>{no}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            <Section number="02" title="Glosario de Marca">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+                {[
+                  { tecnico: "Budget / Presupuesto",  quinto: "Plan de quincena" },
+                  { tecnico: "Emergency Fund",         quinto: "Guardadito de emergencia" },
+                  { tecnico: "Debt snowball",          quinto: "Estrategia bola de nieve" },
+                  { tecnico: "Financial goals",        quinto: "Metas de vida" },
+                  { tecnico: "Income",                 quinto: "Lo que entra" },
+                  { tecnico: "Expenses",               quinto: "Lo que sale" },
+                ].map(({ tecnico, quinto }) => (
+                  <Card key={tecnico} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px" }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontFamily: f.body, fontSize: 12, color: ui.muted, marginBottom: 2 }}>{tecnico}</div>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <span style={{ color: colors.green[600], fontSize: 12 }}>→</span>
+                        <span style={{ fontFamily: f.display, fontWeight: 700, fontSize: 14, color: ui.primary }}>{quinto}</span>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+
+            <Section number="03" title="Reglas de Escritura">
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {[
+                  "Siempre de tú, nunca de usted",
+                  "Frases cortas — una idea por oración",
+                  "Usar pesos mexicanos (MXN o $) como unidad por defecto",
+                  "Celebrar los logros, aunque sean pequeños",
+                  "Nunca usar jerga financiera sin explicarla",
+                  "Los errores del usuario siempre tienen solución, nunca son fracasos",
+                  "Usar el humor con moderación — las finanzas son serias, pero no deben dar miedo",
+                ].map((regla, i) => (
+                  <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                    <span style={{ fontFamily: f.mono, fontSize: 12, color: colors.green[700], fontWeight: 600, flexShrink: 0, marginTop: 1 }}>0{i + 1}</span>
+                    <span style={{ fontFamily: f.body, fontSize: 14, color: ui.text, lineHeight: 1.5 }}>{regla}</span>
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            <Section number="04" title="Espectro de Tono">
+              <Card style={{ padding: "24px 32px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 16 }}>
+                  <span style={{ fontFamily: f.body, fontSize: 12, color: ui.muted }}>Serio</span>
+                  <div style={{ flex: 1, height: 4, borderRadius: 999, background: `linear-gradient(to right, ${colors.neutral[400]}, ${colors.green[400]})`, position: "relative" }}>
+                    <div style={{ position: "absolute", left: "45%", top: "50%", transform: "translate(-50%, -50%)", width: 20, height: 20, borderRadius: "50%", backgroundColor: colors.green[700], border: "3px solid white", boxShadow: "0 0 0 2px " + colors.green[700] }} />
+                  </div>
+                  <span style={{ fontFamily: f.body, fontSize: 12, color: ui.muted }}>Relajado</span>
+                </div>
+                <p style={{ fontFamily: f.body, fontSize: 13, color: ui.muted, textAlign: "center", margin: 0, fontStyle: "italic" }}>
+                  Profesional sin ser frío — amigable sin ser frívolo
+                </p>
+              </Card>
+            </Section>
+          </div>
+        )}
+
+      </main>
+
+      {/* ── Footer ── */}
+      <footer style={{ borderTop: `1px solid ${ui.border}`, padding: "24px", textAlign: "center" }}>
+        <div style={{ fontFamily: f.mono, fontSize: 11, color: ui.muted }}>
+          Brand Guidelines Quinto v1.0 · Febrero 2026
+        </div>
+        <div style={{ fontFamily: f.body, fontSize: 12, color: ui.muted, marginTop: 4 }}>
+          "Tu quinto, tus reglas"
+        </div>
+      </footer>
+    </div>
+  );
+}
